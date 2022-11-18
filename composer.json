@@ -1,0 +1,24 @@
+{
+  "name": "theozebua/teecoder-framework",
+  "type": "project",
+  "description": "Just a simple mvc framework for beginners.",
+  "keywords": [
+    "teecoder",
+    "mvc",
+    "framework"
+  ],
+  "license": "MIT",
+  "require": {},
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "Theozebua\\TeecoderFramework\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Theozebua\\TeecoderFramework\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev"
+}
