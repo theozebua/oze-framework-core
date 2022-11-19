@@ -1,9 +1,10 @@
 {
-  "name": "theozebua/teecoder-framework",
+  "name": "theozebua/oze-framework",
   "type": "project",
   "description": "Just a simple mvc framework for beginners.",
   "keywords": [
     "teecoder",
+    "oze",
     "mvc",
     "framework"
   ],
@@ -12,12 +13,12 @@
   "require-dev": {},
   "autoload": {
     "psr-4": {
-      "Theozebua\\TeecoderFramework\\": "src/"
+      "Theozebua\\OzeFramework\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Theozebua\\TeecoderFramework\\Tests\\": "tests/"
+      "Theozebua\\OzeFramework\\Tests\\": "tests/"
     }
   },
   "minimum-stability": "dev"
