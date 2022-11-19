@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Theozebua\TeecoderFramework\Exceptions\Controller;
+namespace Theozebua\OzeFramework\Exceptions\Controller;
 
 use Exception;
-use Theozebua\TeecoderFramework\Exceptions\BaseException;
+use Theozebua\OzeFramework\Exceptions\BaseException;
 
 class ControllerNotFoundException extends Exception implements BaseException
 {

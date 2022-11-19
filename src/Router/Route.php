@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Theozebua\TeecoderFramework\Router;
+namespace Theozebua\OzeFramework\Router;
 
 use Closure;
-use Theozebua\TeecoderFramework\Interfaces\Router\RouteInterface;
+use Theozebua\OzeFramework\Interfaces\Router\RouteInterface;
 
 final class Route implements RouteInterface
 {

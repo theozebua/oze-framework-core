@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Theozebua\TeecoderFramework\Interfaces\Router;
+namespace Theozebua\OzeFramework\Interfaces\Router;
 
 use Closure;
 use InvalidArgumentException;
-use Theozebua\TeecoderFramework\Exceptions\Router\RouteNotFoundException;
+use Theozebua\OzeFramework\Exceptions\Router\RouteNotFoundException;
 
 interface RouteRegistrarInterface
 {

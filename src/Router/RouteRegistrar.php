@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Theozebua\TeecoderFramework\Router;
+namespace Theozebua\OzeFramework\Router;
 
 use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
-use Theozebua\TeecoderFramework\Exceptions\Controller\ControllerNotFoundException;
-use Theozebua\TeecoderFramework\Exceptions\Router\RouteNotFoundException;
-use Theozebua\TeecoderFramework\Interfaces\Router\RouteRegistrarInterface;
+use Theozebua\OzeFramework\Exceptions\Controller\ControllerNotFoundException;
+use Theozebua\OzeFramework\Exceptions\Router\RouteNotFoundException;
+use Theozebua\OzeFramework\Interfaces\Router\RouteRegistrarInterface;
 
 final class RouteRegistrar implements RouteRegistrarInterface
 {

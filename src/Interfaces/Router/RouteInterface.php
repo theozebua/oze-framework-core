@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Theozebua\TeecoderFramework\Interfaces\Router;
+namespace Theozebua\OzeFramework\Interfaces\Router;
 
 use Closure;
 
