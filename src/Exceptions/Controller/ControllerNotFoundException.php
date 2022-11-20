@@ -7,7 +7,7 @@ namespace Theozebua\OzeFramework\Exceptions\Controller;
 use Exception;
 use Theozebua\OzeFramework\Exceptions\BaseException;
 
-class ControllerNotFoundException extends Exception implements BaseException
+final class ControllerNotFoundException extends Exception implements BaseException
 {
     // 
 }
