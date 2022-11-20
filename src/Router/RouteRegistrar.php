@@ -35,13 +35,13 @@ final class RouteRegistrar implements RouteRegistrarInterface
      */
     final public function resolve(string $requestUri, string $requestMethod): mixed
     {
-        $route  = parse_url($requestUri)['path'];
+        $route  = parse_url($requestUri, PHP_URL_PATH);
         $action = $this->routes[$requestMethod][$route] ?? null;
 
         $this->ignoreRoute($route, '/favicon.ico');
 
         if (!$action) {
-            throw new RouteNotFoundException("Route {$route} is not found");
+            throw new RouteNotFoundException("Route {$route} with {$requestMethod} method is not found");
         }
 
         if (!$action instanceof Closure && !is_array($action)) {
