@@ -68,9 +68,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
             return call_user_func($action);
         }
 
-        if (is_array($action)) {
-            return $this->resolveController($action);
-        }
+        return $this->resolveController($action);
     }
 
     /**
