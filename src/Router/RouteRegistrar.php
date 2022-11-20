@@ -41,10 +41,12 @@ final class RouteRegistrar implements RouteRegistrarInterface
         $this->ignoreRoute($route, '/favicon.ico');
 
         if (!$action) {
+            http_response_code(404);
             throw new RouteNotFoundException("Route {$route} with {$requestMethod} method is not found");
         }
 
         if (!$action instanceof Closure && !is_array($action)) {
+            http_response_code(500);
             throw new InvalidArgumentException("Action must be an instance of \\Closure or array of controller and method");
         }
 
@@ -71,6 +73,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
         [$class, $method] = $action;
 
         if (!class_exists($class)) {
+            http_response_code(500);
             throw new ControllerNotFoundException("{$class} is not found");
         }
 
@@ -93,6 +96,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
     private function resolveMethod(object $object, string $class, string $method): mixed
     {
         if (!method_exists($class, $method)) {
+            http_response_code(500);
             throw new BadMethodCallException("Method {$method} is not found in {$class}");
         }
 

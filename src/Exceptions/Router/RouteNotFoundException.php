@@ -7,7 +7,7 @@ namespace Theozebua\OzeFramework\Exceptions\Router;
 use Exception;
 use Theozebua\OzeFramework\Exceptions\BaseException;
 
-class RouteNotFoundException extends Exception implements BaseException
+final class RouteNotFoundException extends Exception implements BaseException
 {
     // 
 }
