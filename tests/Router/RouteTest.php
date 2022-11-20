@@ -18,111 +18,86 @@ final class RouteTest extends TestCase
 
     final public function testIfGetRouteRegisteredSuccessfully(): void
     {
+        $closure = fn () => 'Success';
+
         $this->route->get('/', ['SomeController', 'index']);
-        $this->route->get('/something', function () {
-            return;
-        });
+        $this->route->get('/something', $closure);
 
         $excpected = [
             'GET' => [
-                '/' => [
-                    'SomeController',
-                    'index'
-                ],
-                '/something' => function () {
-                    return;
-                }
+                '/' => ['SomeController', 'index'],
+                '/something' => $closure
             ]
         ];
 
-        $this->assertEquals($excpected, $this->route->routeRegistrar->getRoutes());
+        $this->assertSame($excpected, $this->route->routeRegistrar->getRoutes());
     }
 
     final public function testIfPostRouteRegisteredSuccessfully(): void
     {
-        $this->route->post('/', ['SomeController', 'store']);
-        $this->route->post('/something', function () {
-            return;
-        });
+        $closure = fn () => 'Success';
+
+        $this->route->post('/', ['SomeController', 'index']);
+        $this->route->post('/something', $closure);
 
         $excpected = [
             'POST' => [
-                '/' => [
-                    'SomeController',
-                    'store'
-                ],
-                '/something' => function () {
-                    return;
-                }
+                '/' => ['SomeController', 'index'],
+                '/something' => $closure
             ]
         ];
 
-        $this->assertEquals($excpected, $this->route->routeRegistrar->getRoutes());
+        $this->assertSame($excpected, $this->route->routeRegistrar->getRoutes());
     }
 
     final public function testIfPutRouteRegisteredSuccessfully(): void
     {
-        $this->route->put('/', ['SomeController', 'update']);
-        $this->route->put('/something', function () {
-            return;
-        });
+        $closure = fn () => 'Success';
+
+        $this->route->put('/', ['SomeController', 'index']);
+        $this->route->put('/something', $closure);
 
         $excpected = [
             'PUT' => [
-                '/' => [
-                    'SomeController',
-                    'update'
-                ],
-                '/something' => function () {
-                    return;
-                }
+                '/' => ['SomeController', 'index'],
+                '/something' => $closure
             ]
         ];
 
-        $this->assertEquals($excpected, $this->route->routeRegistrar->getRoutes());
+        $this->assertSame($excpected, $this->route->routeRegistrar->getRoutes());
     }
 
     final public function testiIfPatchRouteRegisteredSuccessfully(): void
     {
-        $this->route->patch('/', ['SomeController', 'update']);
-        $this->route->patch('/something', function () {
-            return;
-        });
+        $closure = fn () => 'Success';
+
+        $this->route->patch('/', ['SomeController', 'index']);
+        $this->route->patch('/something', $closure);
 
         $excpected = [
             'PATCH' => [
-                '/' => [
-                    'SomeController',
-                    'update'
-                ],
-                '/something' => function () {
-                    return;
-                }
+                '/' => ['SomeController', 'index'],
+                '/something' => $closure
             ]
         ];
 
-        $this->assertEquals($excpected, $this->route->routeRegistrar->getRoutes());
+        $this->assertSame($excpected, $this->route->routeRegistrar->getRoutes());
     }
 
     final public function testIfDeleteRouteRegisteredSuccessfully(): void
     {
-        $this->route->delete('/', ['SomeController', 'destroy']);
-        $this->route->delete('/something', function () {
-            return;
-        });
+        $closure = fn () => 'Success';
+
+        $this->route->delete('/', ['SomeController', 'index']);
+        $this->route->delete('/something', $closure);
 
         $excpected = [
             'DELETE' => [
-                '/' => [
-                    'SomeController',
-                    'destroy'
-                ],
-                '/something' => function () {
-                    return;
-                }
+                '/' => ['SomeController', 'index'],
+                '/something' => $closure
             ]
         ];
 
-        $this->assertEquals($excpected, $this->route->routeRegistrar->getRoutes());
+        $this->assertSame($excpected, $this->route->routeRegistrar->getRoutes());
     }
 }
