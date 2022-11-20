@@ -40,7 +40,7 @@ final class RouteRegistrarTest extends TestCase
             ]
         ];
 
-        $this->assertEquals($excpected, $this->routeRegistrar->getRoutes());
+        $this->assertSame($excpected, $this->routeRegistrar->getRoutes());
     }
 
     final public function testIfControllerRouteResolvedSuccessfully(): void
@@ -55,31 +55,27 @@ final class RouteRegistrarTest extends TestCase
 
         $this->routeRegistrar->register('GET', '/', [$someController::class, 'index']);
 
-        $this->assertEquals('Success', $this->routeRegistrar->resolve('/', 'GET'));
+        $this->assertSame('Success', $this->routeRegistrar->resolve('/', 'GET'));
     }
 
     final public function testIfClosureRouteRegisteredSuccessfully(): void
     {
-        $this->routeRegistrar->register('GET', '/', function () {
-            return;
-        });
+        $closure = fn () => 'Success';
+
+        $this->routeRegistrar->register('GET', '/', $closure);
 
         $excpected = [
-            'GET' => [
-                '/' => function () {
-                    return;
-                }
-            ]
+            'GET' => ['/' => $closure]
         ];
 
-        $this->assertEquals($excpected, $this->routeRegistrar->getRoutes());
+        $this->assertSame($excpected, $this->routeRegistrar->getRoutes());
     }
 
     final public function testIfClosureRouteResolvedSuccessfully(): void
     {
         $this->routeRegistrar->register('GET', '/', fn () => 'Success');
 
-        $this->assertEquals('Success', $this->routeRegistrar->resolve('/', 'GET'));
+        $this->assertSame('Success', $this->routeRegistrar->resolve('/', 'GET'));
     }
 
     final public function testIfItThrowsInvalidArgumentExceptionWhenRequestMethodIsInvalid(): void
