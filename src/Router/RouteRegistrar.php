@@ -16,9 +16,16 @@ final class RouteRegistrar implements RouteRegistrarInterface
     /**
      * Registered routes.
      * 
-     * @var array<string, array<string, Closure|array<string, string>>> $routes
+     * @var array<string, array<string, Closure|array<int, string>>> $routes
      */
     private array $routes = [];
+
+    /**
+     * Supported request methods.
+     * 
+     * @var array<int, string> $requestMethods
+     */
+    private array $requestMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * {@inheritdoc}
@@ -35,6 +42,13 @@ final class RouteRegistrar implements RouteRegistrarInterface
      */
     final public function resolve(string $requestUri, string $requestMethod): mixed
     {
+        if (!in_array($requestMethod, $this->requestMethods)) {
+            $requestMethods = implode(', ', $this->requestMethods);
+
+            http_response_code(400);
+            throw new InvalidArgumentException("Method {$requestMethod} is not allowed. Supported method are {$requestMethods}");
+        }
+
         $route  = parse_url($requestUri, PHP_URL_PATH);
         $action = $this->routes[$requestMethod][$route] ?? null;
 
@@ -57,6 +71,16 @@ final class RouteRegistrar implements RouteRegistrarInterface
         if (is_array($action)) {
             return $this->resolveController($action);
         }
+    }
+
+    /**
+     * Get all registered routes.
+     * 
+     * @return array<string, array<string, Closure|array<int, string>>>
+     */
+    final public function getRoutes(): array
+    {
+        return $this->routes;
     }
 
     /**
