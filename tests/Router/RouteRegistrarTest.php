@@ -43,6 +43,21 @@ final class RouteRegistrarTest extends TestCase
         $this->assertEquals($excpected, $this->routeRegistrar->getRoutes());
     }
 
+    final public function testIfControllerRouteResolvedSuccessfully(): void
+    {
+        $someController = new class
+        {
+            final public function index(): string
+            {
+                return 'Success';
+            }
+        };
+
+        $this->routeRegistrar->register('GET', '/', [$someController::class, 'index']);
+
+        $this->assertEquals('Success', $this->routeRegistrar->resolve('/', 'GET'));
+    }
+
     final public function testIfClosureRouteRegisteredSuccessfully(): void
     {
         $this->routeRegistrar->register('GET', '/', function () {
@@ -58,6 +73,13 @@ final class RouteRegistrarTest extends TestCase
         ];
 
         $this->assertEquals($excpected, $this->routeRegistrar->getRoutes());
+    }
+
+    final public function testIfClosureRouteResolvedSuccessfully(): void
+    {
+        $this->routeRegistrar->register('GET', '/', fn () => 'Success');
+
+        $this->assertEquals('Success', $this->routeRegistrar->resolve('/', 'GET'));
     }
 
     final public function testIfItThrowsInvalidArgumentExceptionWhenRequestMethodIsInvalid(): void
