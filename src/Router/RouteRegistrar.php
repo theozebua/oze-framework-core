@@ -7,12 +7,20 @@ namespace Theozebua\OzeFramework\Router;
 use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
+use Theozebua\OzeFramework\Container\Container;
 use Theozebua\OzeFramework\Exceptions\Controller\ControllerNotFoundException;
 use Theozebua\OzeFramework\Exceptions\Router\RouteNotFoundException;
 use Theozebua\OzeFramework\Interfaces\Router\RouteRegistrarInterface;
 
 final class RouteRegistrar implements RouteRegistrarInterface
 {
+    /**
+     * The DI Container.
+     * 
+     * @var Container $container
+     */
+    private Container $container;
+
     /**
      * Registered routes.
      * 
@@ -26,6 +34,16 @@ final class RouteRegistrar implements RouteRegistrarInterface
      * @var array<int, string> $requestMethods
      */
     private array $requestMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+
+    /**
+     * Create RouteRegistrar instance.
+     * 
+     * @return void
+     */
+    final public function __construct()
+    {
+        $this->container = new Container();
+    }
 
     /**
      * {@inheritdoc}
@@ -99,7 +117,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
             throw new ControllerNotFoundException("{$class} is not found");
         }
 
-        $object = new $class();
+        $object = $this->container->get($class);
 
         return $this->resolveMethod($object, $class, $method);
     }
@@ -122,7 +140,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
             throw new BadMethodCallException("Method {$method} is not found in {$class}");
         }
 
-        return call_user_func_array([$object, $method], []);
+        return call_user_func_array([$object, $method], $this->container->getMethodDependencies($object, $method));
     }
 
     /**
