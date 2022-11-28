@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Theozebua\OzeFramework\Tests\Router;
+namespace OzeFramework\Tests\Router;
 
 use BadMethodCallException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Theozebua\OzeFramework\Exceptions\Controller\ControllerNotFoundException;
-use Theozebua\OzeFramework\Exceptions\Router\RouteNotFoundException;
-use Theozebua\OzeFramework\Router\RouteRegistrar;
+use OzeFramework\Exceptions\Controller\ControllerNotFoundException;
+use OzeFramework\Exceptions\Router\RouteNotFoundException;
+use OzeFramework\Router\RouteRegistrar;
 
 final class RouteRegistrarTest extends TestCase
 {
