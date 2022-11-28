@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Theozebua\OzeFramework\Tests\Router;
+namespace OzeFramework\Tests\Router;
 
 use PHPUnit\Framework\TestCase;
-use Theozebua\OzeFramework\Router\Route;
+use OzeFramework\Router\Route;
 
 final class RouteTest extends TestCase
 {
