@@ -72,4 +72,16 @@ final class Request implements RequestInterface
     {
         return $this->post();
     }
+
+    /**
+     * Get uploaded file(s).
+     * 
+     * @param null|string $key
+     * 
+     * @return FileUploads
+     */
+    final public function file(?string $key = null): FileUploads
+    {
+        return new FileUploads($key);
+    }
 }
