@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OzeFramework\Router;
 
 use Closure;
+use OzeFramework\Container\Container;
 use OzeFramework\Interfaces\Router\RouteInterface;
 
 final class Route implements RouteInterface
@@ -21,9 +22,9 @@ final class Route implements RouteInterface
      * 
      * @return void
      */
-    final public function __construct()
+    final public function __construct(private Container $container)
     {
-        $this->routeRegistrar = new RouteRegistrar();
+        $this->routeRegistrar = new RouteRegistrar($container);
     }
 
     /**

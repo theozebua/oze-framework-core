@@ -15,13 +15,6 @@ use OzeFramework\Interfaces\Router\RouteRegistrarInterface;
 final class RouteRegistrar implements RouteRegistrarInterface
 {
     /**
-     * The DI Container.
-     * 
-     * @var Container $container
-     */
-    private Container $container;
-
-    /**
      * Registered routes.
      * 
      * @var array<string, array<string, Closure|array<int, string>>> $routes
@@ -40,9 +33,9 @@ final class RouteRegistrar implements RouteRegistrarInterface
      * 
      * @return void
      */
-    final public function __construct()
+    final public function __construct(private Container $container)
     {
-        $this->container = new Container();
+        // 
     }
 
     /**
