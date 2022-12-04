@@ -13,9 +13,9 @@ interface ContainerInterface extends PsrContainerInterface
      * Register a binding with the container.
      * 
      * @param string $id Identifier of the entry to look for.
-     * @param Closure $concrete
+     * @param Closure|string $concrete
      * 
      * @return void
      */
-    public function bind(string $id, Closure $concrete): void;
+    public function bind(string $id, Closure|string $concrete): void;
 }
