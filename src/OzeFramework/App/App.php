@@ -12,27 +12,6 @@ use OzeFramework\Router\Route;
 class App implements AppInterface
 {
     /**
-     * The App class.
-     * 
-     * @var App $app
-     */
-    public static App $app;
-
-    /**
-     * The DI Container class.
-     * 
-     * @var Container $container
-     */
-    public Container $container;
-
-    /**
-     * The Route class.
-     * 
-     * @var Route $route
-     */
-    public Route $route;
-
-    /**
      * The root path.
      * 
      * @var string $rootDir
@@ -46,12 +25,9 @@ class App implements AppInterface
      * 
      * @return void
      */
-    final public function __construct(string $rootDir)
+    final public function __construct(string $rootDir, private Container $container, private Route $route)
     {
-        self::$app       = $this;
-        self::$rootDir   = $rootDir;
-        $this->container = new Container();
-        $this->route     = new Route($this->container);
+        self::$rootDir = $rootDir;
     }
 
     /**
@@ -61,7 +37,7 @@ class App implements AppInterface
     {
         try {
             $requestMethod = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-
+            $this->route->routeRegistrar->setContainer($this->container);
             echo $this->route->routeRegistrar->resolve($_SERVER['REQUEST_URI'], strtoupper($requestMethod));
         } catch (Exception $e) {
             throw $e;
