@@ -21,7 +21,7 @@ final class Container implements ContainerInterface
     /**
      * The class entries.
      * 
-     * @var array<string, Closure> $entries
+     * @var array<string, Closure|string> $entries
      */
     private array $entries = [];
 
@@ -31,12 +31,6 @@ final class Container implements ContainerInterface
     final public function get(string $id): mixed
     {
         try {
-            if ($this->has($id)) {
-                $entry = $this->entries[$id];
-
-                return $entry($this);
-            }
-
             return $this->resolve($id);
         } catch (Exception $e) {
             if ($e instanceof ContainerException) {
@@ -62,7 +56,7 @@ final class Container implements ContainerInterface
     /**
      * {@inheritdoc}
      */
-    final public function bind(string $id, Closure $concrete): void
+    final public function bind(string $id, Closure|string $concrete): void
     {
         $this->entries[$id] = $concrete;
     }
@@ -103,6 +97,16 @@ final class Container implements ContainerInterface
         $reflectionClass = new ReflectionClass($id);
 
         if (!$reflectionClass->isInstantiable()) {
+            if ($this->has($id)) {
+                $entry = $this->entries[$id];
+
+                if ($entry instanceof Closure) {
+                    return $entry($this);
+                }
+
+                return $this->resolve($entry);
+            }
+
             http_response_code(500);
             throw new ContainerException("Class {$id} is not instantiable");
         }
