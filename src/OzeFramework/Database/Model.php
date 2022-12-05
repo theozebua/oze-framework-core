@@ -9,7 +9,9 @@ use OzeFramework\Exceptions\Database\ConfigNotFoundException;
 use OzeFramework\Interfaces\Database\ModelInterface;
 
 /**
- * @method array all(array $columns = ['*'])
+ * @method array all(array $columns = ['*']) Get all data.
+ * @method array|false getWhere(string $key, string $operator = '=', mixed $value, array $columns = ['*']) Get data based on given condition.
+ * @method object|false firstWhere(string $key, string $operator = '=', mixed $value, array $columns = ['*']) Get first data based on given condition.
  */
 abstract class Model implements ModelInterface
 {
@@ -48,8 +50,8 @@ abstract class Model implements ModelInterface
             throw new ConfigNotFoundException(sprintf("Config file \"%s\" is not found in %s", 'database.php', $configDirectory));
         }
 
-        $config        = require $dbConfig;
-        $dbh           = (new Connection($config))->connect();
+        $config             = require $dbConfig;
+        $dbh                = (new Connection($config))->connect();
         $this->builtinQuery = new BuiltinQuery($dbh, $this->model, $this->table);
     }
 
