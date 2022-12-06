@@ -20,7 +20,8 @@
       "OzeFramework\\": "src/OzeFramework/"
     },
     "files": [
-      "src/OzeFramework/View/helpers.php"
+      "src/OzeFramework/View/helpers.php",
+      "src/OzeFramework/Env/helpers.php"
     ]
   },
   "autoload-dev": {
