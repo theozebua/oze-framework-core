@@ -6,6 +6,7 @@ namespace OzeFramework\App;
 
 use Exception;
 use OzeFramework\Container\Container;
+use OzeFramework\Env\Environment;
 use OzeFramework\Interfaces\App\AppInterface;
 use OzeFramework\Router\Route;
 
@@ -17,6 +18,13 @@ class App implements AppInterface
      * @var string $rootDir
      */
     public static string $rootDir;
+
+    /**
+     * The environment variable class.
+     * 
+     * @var Environment $env
+     */
+    private static Environment $env;
 
     /**
      * Create the application.
@@ -33,6 +41,18 @@ class App implements AppInterface
     /**
      * {@inheritdoc}
      */
+    final public function setup(): void
+    {
+        static::$env = new Environment();
+
+        foreach ($_ENV as $key => $value) {
+            static::$env->$key = $value;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     final public function run(): void
     {
         try {
@@ -42,5 +62,17 @@ class App implements AppInterface
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    /**
+     * Get environment variable by the given key.
+     * 
+     * @param string $key
+     * 
+     * @return mixed
+     */
+    final public static function env(string $key): mixed
+    {
+        return static::$env->get($key);
     }
 }

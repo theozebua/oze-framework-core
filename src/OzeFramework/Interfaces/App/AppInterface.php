@@ -7,6 +7,13 @@ namespace OzeFramework\Interfaces\App;
 interface AppInterface
 {
     /**
+     * Setup the application.
+     * 
+     * @return void
+     */
+    public function setup(): void;
+
+    /**
      * Run the appilcation.
      * 
      * @return void
