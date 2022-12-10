@@ -7,9 +7,17 @@ namespace OzeFramework\View;
 use OzeFramework\App\App;
 use OzeFramework\Exceptions\View\ViewNotFoundException;
 use OzeFramework\Interfaces\View\ViewInterface;
+use OzeFramework\Response\Response;
 
 final class View implements ViewInterface
 {
+    /**
+     * The Response class.
+     * 
+     * @var Response $response
+     */
+    private Response $response;
+
     /**
      * Default view file extension.
      * 
@@ -26,7 +34,7 @@ final class View implements ViewInterface
      */
     final public function __construct(private string $view, private array $data = [])
     {
-        // 
+        $this->response = new Response();
     }
 
     /**
@@ -45,6 +53,7 @@ final class View implements ViewInterface
         $view = App::$rootDir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->view . $this->extension;
 
         if (!file_exists($view)) {
+            $this->response->statusCode(Response::NOT_FOUND);
             throw new ViewNotFoundException("View not found: {$view}");
         }
 

@@ -6,9 +6,17 @@ namespace OzeFramework\Request;
 
 use OzeFramework\Exceptions\Request\KeyNotFoundException;
 use OzeFramework\Interfaces\Request\FileUploadsInterface;
+use OzeFramework\Response\Response;
 
 final class FileUploads implements FileUploadsInterface
 {
+    /**
+     * The Response class.
+     * 
+     * @var Response $response
+     */
+    private Response $response;
+
     /**
      * Uploaded file(s).
      * 
@@ -25,10 +33,12 @@ final class FileUploads implements FileUploadsInterface
      */
     final public function __construct(?string $key = null)
     {
-        $this->files = $_FILES;
+        $this->response = new Response();
+        $this->files    = $_FILES;
 
         if (!is_null($key)) {
             if (!$this->has($key)) {
+                $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
                 throw new KeyNotFoundException("Key {$key} is not found");
             }
 

@@ -15,15 +15,33 @@ use ReflectionUnionType;
 use OzeFramework\Exceptions\Container\ContainerException;
 use OzeFramework\Exceptions\Container\NotFoundException;
 use OzeFramework\Interfaces\Container\ContainerInterface;
+use OzeFramework\Response\Response;
 
 final class Container implements ContainerInterface
 {
+    /**
+     * The Response class.
+     * 
+     * @var Response $response
+     */
+    private Response $response;
+
     /**
      * The class entries.
      * 
      * @var array<string, Closure|string> $entries
      */
     private array $entries = [];
+
+    /**
+     * Create Container instance.
+     * 
+     * @return void
+     */
+    final public function __construct()
+    {
+        $this->response = new Response();
+    }
 
     /**
      * {@inheritdoc}
@@ -34,13 +52,13 @@ final class Container implements ContainerInterface
             return $this->resolve($id);
         } catch (Exception $e) {
             if ($e instanceof ContainerException) {
-                http_response_code(500);
                 throw $e;
             }
 
-            http_response_code(500);
+            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw new NotFoundException("No entry was found for {$id} identifier.");
         } catch (ArgumentCountError $e) {
+            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw new ContainerException($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(), $e->getCode());
         }
     }
@@ -107,7 +125,7 @@ final class Container implements ContainerInterface
                 return $this->resolve($entry);
             }
 
-            http_response_code(500);
+            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw new ContainerException("Class {$id} is not instantiable");
         }
 

@@ -7,6 +7,7 @@ namespace OzeFramework\Database;
 use OzeFramework\App\App;
 use OzeFramework\Exceptions\Database\ConfigNotFoundException;
 use OzeFramework\Interfaces\Database\ModelInterface;
+use OzeFramework\Response\Response;
 
 /**
  * @method array all(array $columns = ['*']) Get all data.
@@ -15,6 +16,13 @@ use OzeFramework\Interfaces\Database\ModelInterface;
  */
 abstract class Model implements ModelInterface
 {
+    /**
+     * The Response class.
+     * 
+     * @var Response $response
+     */
+    private Response $response;
+
     /**
      * Model name.
      * 
@@ -47,6 +55,7 @@ abstract class Model implements ModelInterface
         $dbConfig        = $configDirectory . 'database.php';
 
         if (!file_exists($dbConfig)) {
+            $this->response->statusCode(Response::NOT_FOUND);
             throw new ConfigNotFoundException(sprintf("Config file \"%s\" is not found in %s", 'database.php', $configDirectory));
         }
 
