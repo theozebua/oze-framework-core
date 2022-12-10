@@ -7,7 +7,7 @@ namespace OzeFramework\Database;
 use OzeFramework\App\App;
 use OzeFramework\Exceptions\Database\ConfigNotFoundException;
 use OzeFramework\Interfaces\Database\ModelInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Http\Response;
 
 /**
  * @method array all(array $columns = ['*']) Get all data.
@@ -46,6 +46,8 @@ abstract class Model implements ModelInterface
 
     /**
      * Model constructor.
+     * 
+     * @throws ConfigNotFoundException
      * 
      * @return void
      */

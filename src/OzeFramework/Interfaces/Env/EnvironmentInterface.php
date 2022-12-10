@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace OzeFramework\Interfaces\Env;
 
+use OzeFramework\Exceptions\Env\KeyNotFoundException;
+
 interface EnvironmentInterface
 {
     /**
      * Get environment variable by the given key.
      * 
      * @param string $key
+     * 
+     * @throws KeyNotFoundException
      * 
      * @return mixed
      */

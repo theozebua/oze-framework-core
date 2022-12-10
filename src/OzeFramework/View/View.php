@@ -7,7 +7,7 @@ namespace OzeFramework\View;
 use OzeFramework\App\App;
 use OzeFramework\Exceptions\View\ViewNotFoundException;
 use OzeFramework\Interfaces\View\ViewInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Http\Response;
 
 final class View implements ViewInterface
 {
