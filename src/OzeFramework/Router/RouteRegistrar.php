@@ -11,6 +11,7 @@ use OzeFramework\Container\Container;
 use OzeFramework\Exceptions\Controller\ControllerNotFoundException;
 use OzeFramework\Exceptions\Router\RouteNotFoundException;
 use OzeFramework\Interfaces\Router\RouteRegistrarInterface;
+use OzeFramework\Response\Response;
 
 final class RouteRegistrar implements RouteRegistrarInterface
 {
@@ -20,6 +21,13 @@ final class RouteRegistrar implements RouteRegistrarInterface
      * @var Container $container
      */
     private Container $container;
+
+    /**
+     * The Response class.
+     * 
+     * @var Response $response
+     */
+    private Response $response;
 
     /**
      * Registered routes.
@@ -34,6 +42,16 @@ final class RouteRegistrar implements RouteRegistrarInterface
      * @var array<int, string> $requestMethods
      */
     private array $requestMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+
+    /**
+     * Create a RouteRegistrar instance.
+     * 
+     * @return void
+     */
+    final public function __construct()
+    {
+        $this->response = new Response();
+    }
 
     /**
      * {@inheritdoc}
@@ -53,7 +71,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
         if (!in_array($requestMethod, $this->requestMethods)) {
             $requestMethods = implode(', ', $this->requestMethods);
 
-            http_response_code(400);
+            $this->response->statusCode(Response::METHOD_NOT_ALLOWED);
             throw new InvalidArgumentException("Method {$requestMethod} is not allowed. Supported method are {$requestMethods}");
         }
 
@@ -63,12 +81,12 @@ final class RouteRegistrar implements RouteRegistrarInterface
         $this->ignoreRoute($route, '/favicon.ico');
 
         if (!$action) {
-            http_response_code(404);
+            $this->response->statusCode(Response::NOT_FOUND);
             throw new RouteNotFoundException("Route {$route} with {$requestMethod} method is not found");
         }
 
         if (!$action instanceof Closure && !is_array($action)) {
-            http_response_code(500);
+            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw new InvalidArgumentException("Action must be an instance of \\Closure or array of controller and method");
         }
 
@@ -115,7 +133,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
         [$class, $method] = $action;
 
         if (!class_exists($class)) {
-            http_response_code(500);
+            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw new ControllerNotFoundException("{$class} is not found");
         }
 
@@ -138,7 +156,7 @@ final class RouteRegistrar implements RouteRegistrarInterface
     private function resolveMethod(object $object, string $class, string $method): mixed
     {
         if (!method_exists($class, $method)) {
-            http_response_code(500);
+            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw new BadMethodCallException("Method {$method} is not found in {$class}");
         }
 

@@ -17,7 +17,7 @@ final class Route implements RouteInterface
     public readonly RouteRegistrar $routeRegistrar;
 
     /**
-     * Create a route instance.
+     * Create a Route instance.
      * 
      * @return void
      */

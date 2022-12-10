@@ -5,11 +5,19 @@ declare(strict_types=1);
 namespace OzeFramework\Database;
 
 use OzeFramework\Interfaces\Database\ConnectionInterface;
+use OzeFramework\Response\Response;
 use PDO;
 use PDOException;
 
 final class Connection implements ConnectionInterface
 {
+    /**
+     * The Response class.
+     * 
+     * @var Response $response
+     */
+    private Response $response;
+
     /**
      * Data Source Name.
      * 
@@ -53,6 +61,7 @@ final class Connection implements ConnectionInterface
         $this->dsn      = sprintf('%s:host=%s;port=%s;dbname=%s;charset=%s', $dsnPrefix, $host, $port, $database, $charset);
         $this->username = $username;
         $this->password = $password;
+        $this->response = new Response();
     }
 
     final public function connect(): PDO
@@ -62,6 +71,7 @@ final class Connection implements ConnectionInterface
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ]);
         } catch (PDOException $e) {
+            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw $e;
         }
     }

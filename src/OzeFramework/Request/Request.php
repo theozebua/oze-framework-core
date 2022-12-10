@@ -6,9 +6,27 @@ namespace OzeFramework\Request;
 
 use OzeFramework\Exceptions\Request\KeyNotFoundException;
 use OzeFramework\Interfaces\Request\RequestInterface;
+use OzeFramework\Response\Response;
 
 final class Request implements RequestInterface
 {
+    /**
+     * The Response class.
+     * 
+     * @var Response $response
+     */
+    private Response $response;
+
+    /**
+     * Create a Request instance.
+     * 
+     * @return void
+     */
+    final public function __construct()
+    {
+        $this->response = new Response();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -16,6 +34,7 @@ final class Request implements RequestInterface
     {
         if (isset($key)) {
             if (!isset($_GET[$key])) {
+                $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
                 throw new KeyNotFoundException("Key {$key} is not found");
             }
 
@@ -32,6 +51,7 @@ final class Request implements RequestInterface
     {
         if (isset($key)) {
             if (!isset($_POST[$key])) {
+                $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
                 throw new KeyNotFoundException("Key {$key} is not found");
             }
 
