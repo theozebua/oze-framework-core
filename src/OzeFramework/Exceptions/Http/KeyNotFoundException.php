@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Exceptions\Request;
+namespace OzeFramework\Exceptions\Http;
 
 use Exception;
 use OzeFramework\Exceptions\BaseException;

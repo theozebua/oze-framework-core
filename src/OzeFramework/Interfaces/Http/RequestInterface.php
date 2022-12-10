@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Interfaces\Request;
+namespace OzeFramework\Interfaces\Http;
 
 use OzeFramework\Exceptions\Request\KeyNotFoundException;
 

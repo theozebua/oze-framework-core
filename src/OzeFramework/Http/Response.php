@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Response;
+namespace OzeFramework\Http;
 
-use OzeFramework\Interfaces\Response\ResponseInterface;
+use OzeFramework\Interfaces\Http\ResponseInterface;
 
 class Response implements ResponseInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Interfaces\Response;
+namespace OzeFramework\Interfaces\Http;
 
 interface ResponseInterface
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Request;
+namespace OzeFramework\Http;
 
-use OzeFramework\Exceptions\Request\KeyNotFoundException;
-use OzeFramework\Interfaces\Request\FileUploadsInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Exceptions\Http\KeyNotFoundException;
+use OzeFramework\Interfaces\Http\FileUploadsInterface;
+use OzeFramework\Http\Response;
 
 final class FileUploads implements FileUploadsInterface
 {
