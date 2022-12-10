@@ -11,7 +11,7 @@ use OzeFramework\Container\Container;
 use OzeFramework\Exceptions\Controller\ControllerNotFoundException;
 use OzeFramework\Exceptions\Router\RouteNotFoundException;
 use OzeFramework\Interfaces\Router\RouteRegistrarInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Http\Response;
 
 final class RouteRegistrar implements RouteRegistrarInterface
 {

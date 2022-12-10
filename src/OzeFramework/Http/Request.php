@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Request;
+namespace OzeFramework\Http;
 
-use OzeFramework\Exceptions\Request\KeyNotFoundException;
-use OzeFramework\Interfaces\Request\RequestInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Exceptions\Http\KeyNotFoundException;
+use OzeFramework\Interfaces\Http\RequestInterface;
+use OzeFramework\Http\Response;
 
 final class Request implements RequestInterface
 {

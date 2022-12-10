@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OzeFramework\Interfaces\App;
 
+use Exception;
+
 interface AppInterface
 {
     /**
@@ -15,6 +17,8 @@ interface AppInterface
 
     /**
      * Run the appilcation.
+     * 
+     * @throws Exception
      * 
      * @return void
      */

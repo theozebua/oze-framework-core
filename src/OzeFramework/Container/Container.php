@@ -15,7 +15,7 @@ use ReflectionUnionType;
 use OzeFramework\Exceptions\Container\ContainerException;
 use OzeFramework\Exceptions\Container\NotFoundException;
 use OzeFramework\Interfaces\Container\ContainerInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Http\Response;
 
 final class Container implements ContainerInterface
 {

@@ -8,7 +8,7 @@ use Dotenv\Dotenv;
 use OzeFramework\App\App;
 use OzeFramework\Exceptions\Env\KeyNotFoundException;
 use OzeFramework\Interfaces\Env\EnvironmentInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Http\Response;
 
 final class Environment implements EnvironmentInterface
 {

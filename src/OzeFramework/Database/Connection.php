@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OzeFramework\Database;
 
 use OzeFramework\Interfaces\Database\ConnectionInterface;
-use OzeFramework\Response\Response;
+use OzeFramework\Http\Response;
 use PDO;
 use PDOException;
 
