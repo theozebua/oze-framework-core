@@ -25,7 +25,7 @@ interface BuiltinQueryInterface
      * 
      * @return array|false
      */
-    public function getWhere(string $key, string $operator = '=', mixed $value, array $columns = ['*']): array|false;
+    public function getWhere(string $key, mixed $value, string $operator = '=', array $columns = ['*']): array|false;
 
     /**
      * Get first data based on given condition.
@@ -37,5 +37,5 @@ interface BuiltinQueryInterface
      * 
      * @return object|false
      */
-    public function firstWhere(string $key, string $operator = '=', mixed $value, array $columns = ['*']): object|false;
+    public function firstWhere(string $key, mixed $value, string $operator = '=',  array $columns = ['*']): object|false;
 }

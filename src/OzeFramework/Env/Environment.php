@@ -12,6 +12,12 @@ use OzeFramework\Http\Response;
 
 final class Environment implements EnvironmentInterface
 {
+    protected string $DATABASE_HOST;
+    protected string $DATABASE_PORT;
+    protected string $DATABASE_NAME;
+    protected string $DATABASE_USER;
+    protected string $DATABASE_PASS;
+
     /**
      * The Response class.
      * 

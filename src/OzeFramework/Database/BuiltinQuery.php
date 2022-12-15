@@ -50,7 +50,7 @@ final class BuiltinQuery implements BuiltinQueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function getWhere(string $key, string $operator = '=', mixed $value, array $columns = ['*']): array|false
+    final public function getWhere(string $key, mixed $value, string $operator = '=', array $columns = ['*']): array|false
     {
         $columns = implode(', ', $columns);
         $columns = rtrim($columns, ', ');
@@ -67,7 +67,7 @@ final class BuiltinQuery implements BuiltinQueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function firstWhere(string $key, string $operator = '=', mixed $value, array $columns = ['*']): object|false
+    final public function firstWhere(string $key, mixed $value, string $operator = '=', array $columns = ['*']): object|false
     {
         $columns = implode(', ', $columns);
         $columns = rtrim($columns, ', ');
