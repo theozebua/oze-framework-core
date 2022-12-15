@@ -8,6 +8,7 @@ use OzeFramework\App\App;
 use OzeFramework\Exceptions\Database\ConfigNotFoundException;
 use OzeFramework\Interfaces\Database\ModelInterface;
 use OzeFramework\Http\Response;
+use PDO;
 
 /**
  * @method array all(array $columns = ['*']) Get all data.
@@ -43,6 +44,11 @@ abstract class Model implements ModelInterface
      * @var BuiltinQuery $builtinQuery
      */
     private BuiltinQuery $builtinQuery;
+    private QueryBuilder $queryBuilder;
+
+    private array $properties;
+
+    private PDO $dbh;
 
     /**
      * Model constructor.
@@ -62,17 +68,29 @@ abstract class Model implements ModelInterface
         }
 
         $config             = require $dbConfig;
-        $dbh                = (new Connection($config))->connect();
-        $this->builtinQuery = new BuiltinQuery($dbh, $this->model, $this->table);
+        $this->dbh          = (new Connection($config))->connect();
+
+        $this->queryBuilder = new QueryBuilder($this->dbh, $this::class, $this->table);
     }
 
-    final public function __set(string $name, mixed $value)
+    final public function __set(string $name, mixed $value): void
     {
-        $this->{$name} = $value;
+        $this->properties[$name] = $value;
+    }
+
+    final public function __get(string $name): mixed
+    {
+        return $this->properties[$name];
     }
 
     final public function __call(string $name, mixed $arguments): mixed
     {
         return call_user_func_array([$this->builtinQuery, $name], $arguments);
+    }
+
+    final static public function __callStatic(string $name, mixed $arguments)
+    {
+        $modelInstance = new (get_called_class());
+        return call_user_func_array([$modelInstance->queryBuilder, $name], $arguments);   
     }
 }
