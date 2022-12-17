@@ -27,6 +27,13 @@ use OzeFramework\Http\Response;
 abstract class Model implements ModelInterface
 {
     /**
+     * The Builder class.
+     * 
+     * @var Builder $builder
+     */
+    private Builder $builder;
+
+    /**
      * The Response class.
      * 
      * @var Response $response
@@ -57,8 +64,8 @@ abstract class Model implements ModelInterface
             throw new ConfigNotFoundException(sprintf("Config file \"%s\" is not found in %s", 'database.php', $configDirectory));
         }
 
-        $config             = require $dbConfig;
-        $this->builder      = new Builder((new Connection($config))->connect(), $this::class, $this->table);
+        $config        = require $dbConfig;
+        $this->builder = new Builder((new Connection($config))->connect(), $this::class, $this->table);
     }
 
     /**
