@@ -60,7 +60,15 @@ final class Environment implements EnvironmentInterface
         return $this;
     }
 
-    final public function __set(string $name, mixed $value)
+    /**
+     * Set dynamic property.
+     * 
+     * @param string $name
+     * @param mixed $value
+     * 
+     * @return void
+     */
+    final public function __set(string $name, mixed $value): void
     {
         $this->{$name} = $value;
     }
