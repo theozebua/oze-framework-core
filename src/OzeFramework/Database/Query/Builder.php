@@ -156,7 +156,7 @@ final class Builder implements BuilderInterface
      */
     final public function orWhereNotLike(string $key, mixed $value): self
     {
-        $this->where($key, $value, 'LIKE', 'OR', useNot: true);
+        $this->where($key, $value, 'LIKE', 'OR', true);
 
         return $this;
     }
