@@ -35,7 +35,7 @@ final class Builder implements BuilderInterface
      * @var array $bindings
      */
     private array $bindings = [
-        'select' => ['*'],
+        'select' => [],
         'wheres' => [],
         'limit' => [],
     ];
