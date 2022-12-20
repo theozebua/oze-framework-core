@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OzeFramework\Database\Query;
 
-use OzeFramework\Exceptions\Database\EmptyColumnException;
 use OzeFramework\Exceptions\Database\TableNotSetException;
 use OzeFramework\Interfaces\Database\Query\BuilderInterface;
 use PDO;
@@ -222,14 +221,12 @@ final class Builder implements BuilderInterface
     /**
      * Check if columns are empty or not.
      * 
-     * @throws EmptyColumnException
-     * 
      * @return void
      */
     private function checkColumns(): void
     {
         if (empty($this->bindings['select'])) {
-            throw new EmptyColumnException('Selected column cannot be empty');
+            $this->bindings['select'] = ['*'];
         }
     }
 
