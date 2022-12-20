@@ -16,6 +16,15 @@ interface BuilderInterface
     public function select(array|string $columns = ['*']): self;
 
     /**
+     * Add FROM clause to the sql query.
+     * 
+     * @param string $table
+     * 
+     * @return self
+     */
+    public function from(string $table): self;
+
+    /**
      * Add WHERE clause to the sql query.
      * 
      * @param string $key

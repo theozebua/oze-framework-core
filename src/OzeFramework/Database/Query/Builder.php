@@ -22,6 +22,13 @@ final class Builder implements BuilderInterface
     private PDOStatement $statement;
 
     /**
+     * Table name.
+     * 
+     * @var string $table
+     */
+    private string $table;
+
+    /**
      * The current SQL query.
      * 
      * @var string $query
@@ -51,7 +58,7 @@ final class Builder implements BuilderInterface
      * 
      * @return void
      */
-    final public function __construct(private PDO $dbh, private string $model, private string $table)
+    final public function __construct(private PDO $dbh, private string $model)
     {
         // 
     }
@@ -65,6 +72,16 @@ final class Builder implements BuilderInterface
             $this->bindings['select'],
             is_array($columns) ? $columns : func_get_args()
         );
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    final public function from(string $table): self
+    {
+        $this->table = $table;
 
         return $this;
     }
