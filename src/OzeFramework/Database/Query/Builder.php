@@ -24,9 +24,9 @@ final class Builder implements BuilderInterface
     /**
      * Table name.
      * 
-     * @var string $table
+     * @var ?string $table
      */
-    private string $table;
+    private ?string $table;
 
     /**
      * The current SQL query.
@@ -58,7 +58,7 @@ final class Builder implements BuilderInterface
      * 
      * @return void
      */
-    final public function __construct(private PDO $dbh, private string $model)
+    final public function __construct(private PDO $dbh, private ?string $model = null)
     {
         // 
     }
@@ -79,7 +79,7 @@ final class Builder implements BuilderInterface
     /**
      * {@inheritdoc}
      */
-    final public function from(string $table): self
+    final public function from(?string $table = null): self
     {
         $this->table = $table;
 
@@ -200,11 +200,11 @@ final class Builder implements BuilderInterface
     /**
      * {@inheritdoc}
      */
-    final public function first(): object
+    final public function first(): object|array
     {
         $this->build();
 
-        return $this->statement->fetchObject($this->model);
+        return $this->statement->fetch();
     }
 
     /**
@@ -231,7 +231,12 @@ final class Builder implements BuilderInterface
         $this->bindWheres();
         $this->bindLimit();
 
-        $this->statement->setFetchMode(PDO::FETCH_CLASS, $this->model);
+        if (isset($this->model)) {
+            $this->statement->setFetchMode(PDO::FETCH_CLASS, $this->model);
+        } else {
+            $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        }
+
         $this->statement->execute();
     }
 
