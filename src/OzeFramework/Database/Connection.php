@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OzeFramework\Database;
 
+use OzeFramework\App\App;
+use OzeFramework\Exceptions\Database\ConfigNotFoundException;
 use OzeFramework\Interfaces\Database\ConnectionInterface;
 use OzeFramework\Http\Response;
 use PDO;
@@ -42,12 +44,14 @@ final class Connection implements ConnectionInterface
     /**
      * Create a database connection.
      * 
-     * @param array<string, mixed> $config
+     * @throws ConfigNotFoundException
      * 
      * @return void
      */
-    final public function __construct(array $config)
+    final public function __construct()
     {
+        $this->response = new Response();
+
         [
             'dsn_prefix' => $dsnPrefix,
             'host'       => $host,
@@ -56,12 +60,11 @@ final class Connection implements ConnectionInterface
             'database'   => $database,
             'username'   => $username,
             'password'   => $password,
-        ] = $config;
+        ] = $this->getDatabaseConfig();
 
         $this->dsn      = sprintf('%s:host=%s;port=%s;dbname=%s;charset=%s', $dsnPrefix, $host, $port, $database, $charset);
         $this->username = $username;
         $this->password = $password;
-        $this->response = new Response();
     }
 
     final public function connect(): PDO
@@ -74,5 +77,18 @@ final class Connection implements ConnectionInterface
             $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
             throw $e;
         }
+    }
+
+    private function getDatabaseConfig(): array
+    {
+        $configDirectory = App::$rootDir . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
+        $config          = $configDirectory . 'database.php';
+
+        if (!file_exists($config)) {
+            $this->response->statusCode(Response::NOT_FOUND);
+            throw new ConfigNotFoundException(sprintf("Config file \"%s\" is not found in %s", 'database.php', $configDirectory));
+        }
+
+        return require $config;
     }
 }
