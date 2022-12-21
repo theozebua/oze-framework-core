@@ -24,6 +24,26 @@ abstract class Model implements ModelInterface
     protected ?string $table = null;
 
     /**
+     * {@inheritdoc}
+     */
+    final public static function all(array|string $columns = ['*']): array
+    {
+        $columns = is_array($columns) ? $columns : func_get_args();
+
+        return static::getQueryBuilder()->select(static::getQualifiedColumns($columns))->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    final public static function first(array|string $columns = ['*']): object
+    {
+        $columns = is_array($columns) ? $columns : func_get_args();
+
+        return static::getQueryBuilder()->select(static::getQualifiedColumns($columns))->first();
+    }
+
+    /**
      * Set dynamic property.
      * 
      * @param string $name
@@ -50,6 +70,30 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Get static instance.
+     * 
+     * @return static
+     */
+    private static function getStaticInstance(): static
+    {
+        return new static;
+    }
+
+    /**
+     * Get qualified columns.
+     * 
+     * @param array<int, string> $columns
+     * 
+     * @return array
+     */
+    private static function getQualifiedColumns(array $columns): array
+    {
+        return array_map(function (string $column) {
+            return static::getStaticInstance()->table . '.' . $column;
+        }, $columns);
+    }
+
+    /**
      * Set the query builder instance.
      * 
      * @return void
@@ -57,7 +101,7 @@ abstract class Model implements ModelInterface
     private static function setQueryBuilder(): void
     {
         static::$builder = new Builder((new Connection())->connect(), static::class);
-        static::$builder->from((new static)->table);
+        static::$builder->from((static::getStaticInstance())->table);
     }
 
     /**
