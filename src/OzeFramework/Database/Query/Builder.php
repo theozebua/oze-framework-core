@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OzeFramework\Database\Query;
 
-use OzeFramework\Exceptions\Database\EmptyColumnException;
 use OzeFramework\Exceptions\Database\TableNotSetException;
 use OzeFramework\Interfaces\Database\Query\BuilderInterface;
 use PDO;
@@ -21,6 +20,13 @@ final class Builder implements BuilderInterface
      * @var PDOStatement $statement
      */
     private PDOStatement $statement;
+
+    /**
+     * Table name.
+     * 
+     * @var ?string $table
+     */
+    private ?string $table;
 
     /**
      * The current SQL query.
@@ -52,7 +58,7 @@ final class Builder implements BuilderInterface
      * 
      * @return void
      */
-    final public function __construct(private PDO $dbh, private string $model, private string $table)
+    final public function __construct(private PDO $dbh, private ?string $model = null)
     {
         // 
     }
@@ -66,6 +72,16 @@ final class Builder implements BuilderInterface
             $this->bindings['select'],
             is_array($columns) ? $columns : func_get_args()
         );
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    final public function from(?string $table = null): self
+    {
+        $this->table = $table;
 
         return $this;
     }
@@ -184,11 +200,11 @@ final class Builder implements BuilderInterface
     /**
      * {@inheritdoc}
      */
-    final public function first(): object
+    final public function first(): object|array
     {
         $this->build();
 
-        return $this->statement->fetchObject($this->model);
+        return $this->statement->fetch();
     }
 
     /**
@@ -215,21 +231,24 @@ final class Builder implements BuilderInterface
         $this->bindWheres();
         $this->bindLimit();
 
-        $this->statement->setFetchMode(PDO::FETCH_CLASS, $this->model);
+        if (isset($this->model)) {
+            $this->statement->setFetchMode(PDO::FETCH_CLASS, $this->model);
+        } else {
+            $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        }
+
         $this->statement->execute();
     }
 
     /**
      * Check if columns are empty or not.
      * 
-     * @throws EmptyColumnException
-     * 
      * @return void
      */
     private function checkColumns(): void
     {
         if (empty($this->bindings['select'])) {
-            throw new EmptyColumnException('Selected column cannot be empty');
+            $this->bindings['select'] = ['*'];
         }
     }
 

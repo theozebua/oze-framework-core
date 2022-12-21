@@ -16,6 +16,15 @@ interface BuilderInterface
     public function select(array|string $columns = ['*']): self;
 
     /**
+     * Add FROM clause to the sql query.
+     * 
+     * @param ?string $table
+     * 
+     * @return self
+     */
+    public function from(?string $table = null): self;
+
+    /**
      * Add WHERE clause to the sql query.
      * 
      * @param string $key
@@ -114,14 +123,14 @@ interface BuilderInterface
     /**
      * Get all data.
      * 
-     * @return array
+     * @return array<int, object>
      */
     public function get(): array;
 
     /**
      * Get the first data.
      * 
-     * @return object
+     * @return object|array
      */
-    public function first(): object;
+    public function first(): object|array;
 }
