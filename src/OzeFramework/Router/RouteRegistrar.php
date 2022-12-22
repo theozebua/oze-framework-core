@@ -78,8 +78,6 @@ final class RouteRegistrar implements RouteRegistrarInterface
         $route  = parse_url($requestUri, PHP_URL_PATH);
         $action = $this->routes[$requestMethod][$route] ?? null;
 
-        $this->ignoreRoute($route, '/favicon.ico');
-
         if (!$action) {
             $this->response->statusCode(Response::NOT_FOUND);
             throw new RouteNotFoundException("Route {$route} with {$requestMethod} method is not found");
@@ -161,20 +159,5 @@ final class RouteRegistrar implements RouteRegistrarInterface
         }
 
         return call_user_func_array([$object, $method], $this->container->getMethodDependencies($object, $method));
-    }
-
-    /**
-     * Ignore a route.
-     * 
-     * @param string $uri
-     * @param string $ignore
-     * 
-     * @return void
-     */
-    private function ignoreRoute(string $uri, string $ignore): void
-    {
-        if ($uri === $ignore) {
-            exit;
-        }
     }
 }
