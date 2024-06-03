@@ -4,179 +4,159 @@ declare(strict_types=1);
 
 namespace OzeFramework\Container;
 
-use ArgumentCountError;
 use Closure;
-use Exception;
+use OzeFramework\Container\Contracts\Container as ContainerContract;
+use OzeFramework\Container\Exceptions\BindingResolutionException;
+use OzeFramework\Container\Exceptions\EntryNotFoundException;
 use ReflectionClass;
-use ReflectionIntersectionType;
-use ReflectionMethod;
+use ReflectionException;
+use ReflectionNamedType;
 use ReflectionParameter;
-use ReflectionUnionType;
-use OzeFramework\Exceptions\Container\ContainerException;
-use OzeFramework\Exceptions\Container\NotFoundException;
-use OzeFramework\Interfaces\Container\ContainerInterface;
-use OzeFramework\Http\Response;
 
-final class Container implements ContainerInterface
+class Container implements ContainerContract
 {
-    /**
-     * The Response class.
-     * 
-     * @var Response $response
-     */
-    private Response $response;
+    /** @var Container|null Container instance */
+    protected static ?Container $instance = null;
+
+    /** @var array<string, Binding> */
+    protected array $bindings = [];
+
+    /** @var array<string, mixed> Singleton instances */
+    protected array $instances = [];
 
     /**
-     * The class entries.
-     * 
-     * @var array<string, Closure|string> $entries
+     * Get the singleton instance of the container.
      */
-    private array $entries = [];
-
-    /**
-     * Create Container instance.
-     * 
-     * @return void
-     */
-    final public function __construct()
+    public static function getInstance(): static
     {
-        $this->response = new Response();
+        if (is_null(static::$instance)) {
+            static::$instance = new static();
+        }
+
+        return static::$instance;
     }
 
     /**
      * {@inheritdoc}
      */
-    final public function get(string $id): mixed
+    public function get(string $id): mixed
     {
+        if (! $this->has($id)) {
+            throw new EntryNotFoundException($id);
+        }
+
+        return $this->resolve($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $id): bool
+    {
+        return isset($this->bindings[$id]) || isset($this->instances[$id]);
+    }
+
+    /**
+     * Bind an abstract type to a concrete implementation.
+     */
+    public function bind(string $abstract, null|Closure|string $concrete = null, bool $singleton = false): void
+    {
+        $this->bindings[$abstract] = new Binding($concrete ?? $abstract, $singleton);
+    }
+
+    /**
+     * Bind an abstract type to a concrete implementation as a singleton.
+     */
+    public function singleton(string $abstract, null|Closure|string $concrete = null): void
+    {
+        $this->bind($abstract, $concrete, true);
+    }
+
+    /**
+     * Resolve a binding from the container.
+     *
+     * @throws BindingResolutionException
+     */
+    protected function resolve(string $abstract, array $parameters = []): mixed
+    {
+        if (isset($this->instances[$abstract])) {
+            return $this->instances[$abstract];
+        }
+
+        $binding = $this->bindings[$abstract];
+        $object = $this->build($binding->concrete, $parameters);
+
+        if ($binding->singleton) {
+            $this->instances[$abstract] = $object;
+        }
+
+        return $object;
+    }
+
+    /**
+     * Build an instance of the given concrete type.
+     *
+     * @throws BindingResolutionException
+     */
+    protected function build(Closure|string $concrete, array $parameters = []): mixed
+    {
+        if ($concrete instanceof Closure) {
+            return $concrete($this);
+        }
+
         try {
-            return $this->resolve($id);
-        } catch (Exception $e) {
-            if ($e instanceof ContainerException) {
-                throw $e;
-            }
-
-            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
-            throw new NotFoundException("No entry was found for {$id} identifier.");
-        } catch (ArgumentCountError $e) {
-            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
-            throw new ContainerException($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(), $e->getCode());
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    final public function has(string $id): bool
-    {
-        return isset($this->entries[$id]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    final public function bind(string $id, Closure|string $concrete): void
-    {
-        $this->entries[$id] = $concrete;
-    }
-
-    /**
-     * Get all method dependencies.
-     * 
-     * @param object $object
-     * @param string $method
-     * 
-     * @return array
-     */
-    final public function getMethodDependencies(object $object, string $method): array
-    {
-        $reflectionMethod = new ReflectionMethod($object, $method);
-
-        if ($reflectionMethod->getNumberOfParameters() === 0) {
-            return [];
+            $reflectionClass = new ReflectionClass($concrete);
+        } catch (ReflectionException $e) {
+            throw new BindingResolutionException("Target class [{$concrete}] does not exist.", previous: $e);
         }
 
-        $params       = $reflectionMethod->getParameters();
-        $dependencies = [];
-
-        $this->resolveDependencies($params, $dependencies);
-
-        return $dependencies;
-    }
-
-    /**
-     * Recursively resolve an entry and its dependencies.
-     * 
-     * @param string $id Identifier of the entry to look for.
-     * 
-     * @return object
-     */
-    private function resolve(string $id): object
-    {
-        $reflectionClass = new ReflectionClass($id);
-
-        if (!$reflectionClass->isInstantiable()) {
-            if ($this->has($id)) {
-                $entry = $this->entries[$id];
-
-                if ($entry instanceof Closure) {
-                    return $entry($this);
-                }
-
-                return $this->resolve($entry);
-            }
-
-            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
-            throw new ContainerException("Class {$id} is not instantiable");
+        if (! $reflectionClass->isInstantiable()) {
+            throw new BindingResolutionException("Target class [{$concrete}] is not instantiable.");
         }
 
         $constructor = $reflectionClass->getConstructor();
 
-        if (is_null($constructor) || $constructor->getNumberOfParameters() === 0) {
+        if (is_null($constructor)) {
             return $reflectionClass->newInstance();
         }
 
-        $params       = $constructor->getParameters();
-        $dependencies = [];
+        $dependencies = $constructor->getParameters();
 
-        $this->resolveDependencies($params, $dependencies);
-
-        return $reflectionClass->newInstance(...$dependencies);
+        return $reflectionClass->newInstanceArgs($this->resolveDependencies($dependencies, $parameters));
     }
 
     /**
-     * Resolve the dependencies.
-     * 
-     * @param array<int, ReflectionParameter> $params
-     * @param array $dependencies
-     * 
-     * @return void
+     * Resolve all dependencies for a given set of parameters.
+     *
+     * @param  ReflectionParameter[]  $dependencies
+     * @return array<int, mixed>
      */
-    private function resolveDependencies(array $params, array &$dependencies): void
+    protected function resolveDependencies(array $dependencies, array $parameters = []): array
     {
-        foreach ($params as $param) {
-            if (!$param->hasType()) {
-                continue;
-            }
+        return array_map(fn (ReflectionParameter $dependency) => $this->resolveDependency($dependency, $parameters), $dependencies);
+    }
 
-            $type = $param->getType();
+    /**
+     * Resolve a single dependency.
+     *
+     * @throws BindingResolutionException
+     */
+    protected function resolveDependency(ReflectionParameter $dependency, array $parameters = []): mixed
+    {
+        $type = $dependency->getType();
 
-            if ($type instanceof ReflectionUnionType || $type instanceof ReflectionIntersectionType) {
-                throw new ContainerException("Union type and Intersection type is not supported yet.");
-            }
-
-            if ($type->isBuiltin()) {
-                if ($param->isDefaultValueAvailable()) {
-                    $dependencies[$param->name] = $param->getDefaultValue();
-                }
-
-                if (!$param->isDefaultValueAvailable() && $param->allowsNull()) {
-                    $dependencies[$param->name] = null;
-                }
-
-                continue;
-            }
-
-            $dependencies[$param->name] = $this->resolve($type->getName());
+        if ($type instanceof ReflectionNamedType && ! $type->isBuiltin()) {
+            return $this->get($type->getName());
         }
+
+        if (array_key_exists($dependency->name, $parameters)) {
+            return $parameters[$dependency->name];
+        }
+
+        if ($dependency->isDefaultValueAvailable()) {
+            return $dependency->getDefaultValue();
+        }
+
+        throw new BindingResolutionException("Cannot resolve dependency [{$dependency->name}]");
     }
 }
