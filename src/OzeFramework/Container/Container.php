@@ -41,7 +41,7 @@ class Container implements ContainerContract
      */
     public function get(string $id): mixed
     {
-        if (! $this->has($id)) {
+        if (!$this->has($id)) {
             throw new EntryNotFoundException($id);
         }
 
@@ -57,7 +57,7 @@ class Container implements ContainerContract
     }
 
     /**
-     * Bind an abstract type to a concrete implementation.
+     * {@inheritdoc}
      */
     public function bind(string $abstract, null|Closure|string $concrete = null, bool $singleton = false): void
     {
@@ -65,7 +65,7 @@ class Container implements ContainerContract
     }
 
     /**
-     * Bind an abstract type to a concrete implementation as a singleton.
+     * {@inheritdoc}
      */
     public function singleton(string $abstract, null|Closure|string $concrete = null): void
     {
@@ -110,7 +110,7 @@ class Container implements ContainerContract
             throw new BindingResolutionException("Target class [{$concrete}] does not exist.", previous: $e);
         }
 
-        if (! $reflectionClass->isInstantiable()) {
+        if (!$reflectionClass->isInstantiable()) {
             throw new BindingResolutionException("Target class [{$concrete}] is not instantiable.");
         }
 
@@ -145,7 +145,7 @@ class Container implements ContainerContract
     {
         $type = $dependency->getType();
 
-        if ($type instanceof ReflectionNamedType && ! $type->isBuiltin()) {
+        if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
             return $this->get($type->getName());
         }
 

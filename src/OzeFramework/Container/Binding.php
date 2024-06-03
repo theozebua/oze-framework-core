@@ -8,6 +8,13 @@ use Closure;
 
 final readonly class Binding
 {
+    /**
+     * Construct a new binding.
+     *
+     * @param null|Closure|string $concrete
+     * @param bool $singleton
+     * @return void
+     */
     public function __construct(public null|Closure|string $concrete = null, public bool $singleton = false)
     {
         //
