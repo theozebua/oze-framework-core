@@ -7,6 +7,7 @@ namespace OzeFramework\Tests\Container;
 use OzeFramework\Container\Container;
 use OzeFramework\Tests\Container\Helpers\Classes\ClassThatHasDependencies;
 use OzeFramework\Tests\Container\Helpers\Classes\RegularClass;
+use OzeFramework\Tests\Container\Helpers\Interfaces\RegularInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ContainerTest extends TestCase
@@ -17,7 +18,7 @@ final class ContainerTest extends TestCase
     {
         parent::setUp();
 
-        $this->container = new Container();
+        $this->container = Container::getInstance();
     }
 
     public function testContainerCanRegisterRegularBinding(): void
@@ -34,9 +35,7 @@ final class ContainerTest extends TestCase
 
     public function testContainerCanRegisterClosureBinding(): void
     {
-        $this->container->bind(RegularClass::class, function (): RegularClass {
-            return new RegularClass();
-        });
+        $this->container->bind(RegularClass::class, fn (): RegularClass => new RegularClass());
 
         $firstRegularClass = $this->container->get(RegularClass::class);
         $secondRegularClass = $this->container->get(RegularClass::class);
@@ -60,9 +59,7 @@ final class ContainerTest extends TestCase
 
     public function testContainerCanRegisterSingletonClosureBinding(): void
     {
-        $this->container->singleton(RegularClass::class, function (): RegularClass {
-            return new RegularClass();
-        });
+        $this->container->singleton(RegularClass::class, fn (): RegularClass => new RegularClass());
 
         $firstRegularClass = $this->container->get(RegularClass::class);
         $secondRegularClass = $this->container->get(RegularClass::class);
@@ -100,5 +97,61 @@ final class ContainerTest extends TestCase
         $this->assertObjectHasProperty('regularClass', $firstClassThatHasDependencies);
         $this->assertObjectHasProperty('regularClass', $secondClassThatHasDependencies);
         $this->assertSame($firstClassThatHasDependencies->regularClass, $secondClassThatHasDependencies->regularClass);
+    }
+
+    public function testContainerCanRegisterInterfaceBinding(): void
+    {
+        $this->container->bind(RegularInterface::class, RegularClass::class);
+
+        $firstRegularClass = $this->container->get(RegularInterface::class);
+        $secondRegularClass = $this->container->get(RegularInterface::class);
+
+        $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
+        $this->assertNotSame($firstRegularClass, $secondRegularClass);
+    }
+
+    public function testContainerCanRegisterInterfaceBindingWithClosure(): void
+    {
+        $this->container->bind(RegularInterface::class, fn (): RegularClass => new RegularClass());
+
+        $firstRegularClass = $this->container->get(RegularInterface::class);
+        $secondRegularClass = $this->container->get(RegularInterface::class);
+
+        $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
+        $this->assertNotSame($firstRegularClass, $secondRegularClass);
+    }
+
+    public function testContainerCanRegisterInterfaceSingletonBinding(): void
+    {
+        $this->container->singleton(RegularInterface::class, RegularClass::class);
+
+        $firstRegularClass = $this->container->get(RegularInterface::class);
+        $secondRegularClass = $this->container->get(RegularInterface::class);
+
+        $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
+        $this->assertSame($firstRegularClass, $secondRegularClass);
+    }
+
+    public function testContainerCanRegisterInterfaceSingletonBindingWithClosure(): void
+    {
+        $this->container->singleton(RegularInterface::class, fn (): RegularClass => new RegularClass());
+
+        $firstRegularClass = $this->container->get(RegularInterface::class);
+        $secondRegularClass = $this->container->get(RegularInterface::class);
+
+        $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
+        $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
+        $this->assertSame($firstRegularClass, $secondRegularClass);
     }
 }
