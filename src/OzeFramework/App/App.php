@@ -7,6 +7,8 @@ namespace OzeFramework\App;
 use OzeFramework\App\Contracts\App as AppContract;
 use OzeFramework\Container\Container;
 use OzeFramework\Env\Loader;
+use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
+use OzeFramework\Routing\RouteRegistrar;
 
 class App extends Container implements AppContract
 {
@@ -75,6 +77,6 @@ class App extends Container implements AppContract
      */
     public function run(): void
     {
-        //
+        $this->bind(RouteRegistrarContract::class, RouteRegistrar::class);
     }
 }
