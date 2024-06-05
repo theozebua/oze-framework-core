@@ -26,7 +26,7 @@ class Container implements ContainerContract
 
     /**
      * Get the singleton instance of the container.
-     * 
+     *
      * @return static
      */
     public static function getInstance(): static
@@ -40,7 +40,7 @@ class Container implements ContainerContract
 
     /**
      * Set the container instance.
-     * 
+     *
      * @param Container $container
      * @return Container
      */
@@ -86,6 +86,14 @@ class Container implements ContainerContract
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function make(string $abstract, array $parameters = []): mixed
+    {
+        return $this->resolve($abstract, $parameters);
+    }
+
+    /**
      * Resolve a binding from the container.
      *
      * @throws BindingResolutionException
@@ -94,6 +102,10 @@ class Container implements ContainerContract
     {
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
+        }
+
+        if (!isset($this->bindings[$abstract])) {
+            $this->bind($abstract);
         }
 
         $binding = $this->bindings[$abstract];

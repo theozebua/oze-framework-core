@@ -23,10 +23,8 @@ final class ContainerTest extends TestCase
 
     public function testContainerCanRegisterRegularBinding(): void
     {
-        $this->container->bind(RegularClass::class);
-
-        $firstRegularClass = $this->container->get(RegularClass::class);
-        $secondRegularClass = $this->container->get(RegularClass::class);
+        $firstRegularClass = $this->container->make(RegularClass::class);
+        $secondRegularClass = $this->container->make(RegularClass::class);
 
         $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
         $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
@@ -37,8 +35,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->bind(RegularClass::class, fn (): RegularClass => new RegularClass());
 
-        $firstRegularClass = $this->container->get(RegularClass::class);
-        $secondRegularClass = $this->container->get(RegularClass::class);
+        $firstRegularClass = $this->container->make(RegularClass::class);
+        $secondRegularClass = $this->container->make(RegularClass::class);
 
         $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
         $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
@@ -49,8 +47,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->singleton(RegularClass::class);
 
-        $firstRegularClass = $this->container->get(RegularClass::class);
-        $secondRegularClass = $this->container->get(RegularClass::class);
+        $firstRegularClass = $this->container->make(RegularClass::class);
+        $secondRegularClass = $this->container->make(RegularClass::class);
 
         $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
         $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
@@ -61,8 +59,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->singleton(RegularClass::class, fn (): RegularClass => new RegularClass());
 
-        $firstRegularClass = $this->container->get(RegularClass::class);
-        $secondRegularClass = $this->container->get(RegularClass::class);
+        $firstRegularClass = $this->container->make(RegularClass::class);
+        $secondRegularClass = $this->container->make(RegularClass::class);
 
         $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
         $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
@@ -73,8 +71,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->bind(ClassThatHasDependencies::class, fn (): ClassThatHasDependencies => new ClassThatHasDependencies(new RegularClass()));
 
-        $firstClassThatHasDependencies = $this->container->get(ClassThatHasDependencies::class);
-        $secondClassThatHasDependencies = $this->container->get(ClassThatHasDependencies::class);
+        $firstClassThatHasDependencies = $this->container->make(ClassThatHasDependencies::class);
+        $secondClassThatHasDependencies = $this->container->make(ClassThatHasDependencies::class);
 
         $this->assertInstanceOf(ClassThatHasDependencies::class, $firstClassThatHasDependencies);
         $this->assertInstanceOf(ClassThatHasDependencies::class, $secondClassThatHasDependencies);
@@ -88,8 +86,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->singleton(ClassThatHasDependencies::class, fn (): ClassThatHasDependencies => new ClassThatHasDependencies(new RegularClass()));
 
-        $firstClassThatHasDependencies = $this->container->get(ClassThatHasDependencies::class);
-        $secondClassThatHasDependencies = $this->container->get(ClassThatHasDependencies::class);
+        $firstClassThatHasDependencies = $this->container->make(ClassThatHasDependencies::class);
+        $secondClassThatHasDependencies = $this->container->make(ClassThatHasDependencies::class);
 
         $this->assertInstanceOf(ClassThatHasDependencies::class, $firstClassThatHasDependencies);
         $this->assertInstanceOf(ClassThatHasDependencies::class, $secondClassThatHasDependencies);
@@ -103,8 +101,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->bind(RegularInterface::class, RegularClass::class);
 
-        $firstRegularClass = $this->container->get(RegularInterface::class);
-        $secondRegularClass = $this->container->get(RegularInterface::class);
+        $firstRegularClass = $this->container->make(RegularInterface::class);
+        $secondRegularClass = $this->container->make(RegularInterface::class);
 
         $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
         $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);
@@ -117,8 +115,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->bind(RegularInterface::class, fn (): RegularClass => new RegularClass());
 
-        $firstRegularClass = $this->container->get(RegularInterface::class);
-        $secondRegularClass = $this->container->get(RegularInterface::class);
+        $firstRegularClass = $this->container->make(RegularInterface::class);
+        $secondRegularClass = $this->container->make(RegularInterface::class);
 
         $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
         $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);
@@ -131,8 +129,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->singleton(RegularInterface::class, RegularClass::class);
 
-        $firstRegularClass = $this->container->get(RegularInterface::class);
-        $secondRegularClass = $this->container->get(RegularInterface::class);
+        $firstRegularClass = $this->container->make(RegularInterface::class);
+        $secondRegularClass = $this->container->make(RegularInterface::class);
 
         $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
         $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);
@@ -145,8 +143,8 @@ final class ContainerTest extends TestCase
     {
         $this->container->singleton(RegularInterface::class, fn (): RegularClass => new RegularClass());
 
-        $firstRegularClass = $this->container->get(RegularInterface::class);
-        $secondRegularClass = $this->container->get(RegularInterface::class);
+        $firstRegularClass = $this->container->make(RegularInterface::class);
+        $secondRegularClass = $this->container->make(RegularInterface::class);
 
         $this->assertInstanceOf(RegularInterface::class, $firstRegularClass);
         $this->assertInstanceOf(RegularInterface::class, $secondRegularClass);

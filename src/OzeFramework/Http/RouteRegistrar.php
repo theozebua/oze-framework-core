@@ -6,11 +6,10 @@ namespace OzeFramework\Http;
 
 use Closure;
 use OzeFramework\Container\Container;
+use OzeFramework\Http\Attributes\Route as RouteAttribute;
 use OzeFramework\Http\Contracts\Controller;
 use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
 use OzeFramework\Http\Enums\HttpMethod;
-use OzeFramework\Http\Handler;
-use OzeFramework\Http\Attributes\Route as RouteAttribute;
 use ReflectionClass;
 
 class RouteRegistrar implements RouteRegistrarContract
@@ -20,7 +19,7 @@ class RouteRegistrar implements RouteRegistrarContract
 
     /**
      * Create a new RouteRegistrar instance.
-     * 
+     *
      * @param Container|null $container
      * @return void
      */
