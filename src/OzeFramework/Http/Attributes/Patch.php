@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Http;
+namespace OzeFramework\Http\Attributes;
 
 use OzeFramework\Http\Enums\HttpMethod;
 
-class Patch extends Router
+class Patch extends Route
 {
     public function __construct(string $uri)
     {

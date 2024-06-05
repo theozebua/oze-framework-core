@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Routing;
+namespace OzeFramework\Http;
 
 use Closure;
 use OzeFramework\Container\Container;
@@ -10,14 +10,20 @@ use OzeFramework\Http\Contracts\Controller;
 use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
 use OzeFramework\Http\Enums\HttpMethod;
 use OzeFramework\Http\Handler;
-use OzeFramework\Http\Router;
+use OzeFramework\Http\Attributes\Route as RouteAttribute;
 use ReflectionClass;
 
 class RouteRegistrar implements RouteRegistrarContract
 {
-    /** @var array<string, array<string, string>> $routes */
+    /** @var Route[] $routes */
     protected array $routes = [];
 
+    /**
+     * Create a new RouteRegistrar instance.
+     * 
+     * @param Container|null $container
+     * @return void
+     */
     public function __construct(protected ?Container $container = null)
     {
         $this->container ??= Container::getInstance();
@@ -37,7 +43,7 @@ class RouteRegistrar implements RouteRegistrarContract
             $methods = $reflection->getMethods();
 
             foreach ($methods as $method) {
-                $attributes = $method->getAttributes(Router::class);
+                $attributes = $method->getAttributes(RouteAttribute::class);
 
                 foreach ($attributes as $attribute) {
                     $route = $attribute->newInstance();
@@ -53,7 +59,7 @@ class RouteRegistrar implements RouteRegistrarContract
      */
     public function registerRoute(HttpMethod $httpMethod, string $uri, Closure|Handler $handler): self
     {
-        $this->routes[$httpMethod->value][$uri] = $handler;
+        $this->routes[] = new Route($httpMethod, $uri, $handler);
 
         return $this;
     }
@@ -63,7 +69,7 @@ class RouteRegistrar implements RouteRegistrarContract
      */
     public function get(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
-        $this->routes[HttpMethod::GET->value][$uri] = $handler;
+        $this->registerRoute(HttpMethod::GET, $uri, $handler);
 
         return $this;
     }
@@ -73,7 +79,7 @@ class RouteRegistrar implements RouteRegistrarContract
      */
     public function head(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
-        $this->routes[HttpMethod::HEAD->value][$uri] = $handler;
+        $this->registerRoute(HttpMethod::HEAD, $uri, $handler);
 
         return $this;
     }
@@ -83,7 +89,7 @@ class RouteRegistrar implements RouteRegistrarContract
      */
     public function post(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
-        $this->routes[HttpMethod::POST->value][$uri] = $handler;
+        $this->registerRoute(HttpMethod::POST, $uri, $handler);
 
         return $this;
     }
@@ -93,7 +99,7 @@ class RouteRegistrar implements RouteRegistrarContract
      */
     public function put(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
-        $this->routes[HttpMethod::PUT->value][$uri] = $handler;
+        $this->registerRoute(HttpMethod::PUT, $uri, $handler);
 
         return $this;
     }
@@ -103,7 +109,7 @@ class RouteRegistrar implements RouteRegistrarContract
      */
     public function patch(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
-        $this->routes[HttpMethod::PATCH->value][$uri] = $handler;
+        $this->registerRoute(HttpMethod::PATCH, $uri, $handler);
 
         return $this;
     }
@@ -113,8 +119,18 @@ class RouteRegistrar implements RouteRegistrarContract
      */
     public function delete(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
-        $this->routes[HttpMethod::DELETE->value][$uri] = $handler;
+        $this->registerRoute(HttpMethod::DELETE, $uri, $handler);
 
         return $this;
+    }
+
+    /**
+     * Get all registered routes.
+     *
+     * @return Route[]
+     */
+    public function getRoutes(): array
+    {
+        return $this->routes;
     }
 }

@@ -26,6 +26,8 @@ class Container implements ContainerContract
 
     /**
      * Get the singleton instance of the container.
+     * 
+     * @return static
      */
     public static function getInstance(): static
     {
@@ -37,12 +39,23 @@ class Container implements ContainerContract
     }
 
     /**
+     * Set the container instance.
+     * 
+     * @param Container $container
+     * @return Container
+     */
+    public static function setInstance(ContainerContract $container): ContainerContract
+    {
+        return static::$instance = $container;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function get(string $id): mixed
     {
         if (!$this->has($id)) {
-            throw new EntryNotFoundException($id);
+            throw new EntryNotFoundException("Entry [{$id}] not found.");
         }
 
         return $this->resolve($id);
@@ -146,6 +159,10 @@ class Container implements ContainerContract
         $type = $dependency->getType();
 
         if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+            if ($dependency->isDefaultValueAvailable()) {
+                return $dependency->getDefaultValue();
+            }
+
             return $this->get($type->getName());
         }
 

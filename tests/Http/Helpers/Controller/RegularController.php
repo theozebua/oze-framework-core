@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Tests\Http\Routing\Helpers\Controller;
+namespace OzeFramework\Tests\Http\Helpers\Controller;
 
 use OzeFramework\Http\Contracts\Controller;
-use OzeFramework\Http\Get;
 
-class RegularController implements Controller
+final class RegularController implements Controller
 {
-    #[Get('/regular')]
     public function index(): string
     {
         return 'Regular Controller';
