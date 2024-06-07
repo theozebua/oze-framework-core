@@ -9,6 +9,7 @@ use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
 use OzeFramework\Http\Handler;
 use OzeFramework\Http\Route;
 use OzeFramework\Http\RouteRegistrar;
+use OzeFramework\Tests\Http\Helpers\Controller\ControllerWithRouteAttribute;
 use OzeFramework\Tests\Http\Helpers\Controller\RegularController;
 use PHPUnit\Framework\TestCase;
 
@@ -34,9 +35,11 @@ final class RouteRegistrarTest extends TestCase
         $methods = ['get', 'head', 'post', 'put', 'patch', 'delete'];
 
         foreach ($methods as $method) {
+            // Register routes with closure handler
             $this->routeRegistrar->{$method}('/', fn (): string => strtoupper($method) . ' Route');
         }
 
+        // Register routes with controller
         $this->routeRegistrar->get('/regular', new Handler(RegularController::class, 'index'));
 
         $routes = $this->routeRegistrar->getRoutes();
@@ -45,9 +48,15 @@ final class RouteRegistrarTest extends TestCase
         $this->assertContainsOnlyInstancesOf(Route::class, $routes);
     }
 
-    // TODO: Test routes can be registered from controller attribute
-    // public function testRoutesCanBeRegisteredFromControllerAttribute(): void
-    // {
-    //     //
-    // }
+    public function testRoutesCanBeRegisteredFromControllerAttribute(): void
+    {
+        $this->routeRegistrar->registerRoutesFromControllerAttribute([
+            ControllerWithRouteAttribute::class,
+        ]);
+
+        $routes = $this->routeRegistrar->getRoutes();
+
+        $this->assertCount(8, $routes);
+        $this->assertContainsOnlyInstancesOf(Route::class, $routes);
+    }
 }

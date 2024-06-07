@@ -10,6 +10,7 @@ use OzeFramework\Http\Attributes\Route as RouteAttribute;
 use OzeFramework\Http\Contracts\Controller;
 use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
 use OzeFramework\Http\Enums\HttpMethod;
+use ReflectionAttribute;
 use ReflectionClass;
 
 class RouteRegistrar implements RouteRegistrarContract
@@ -34,21 +35,24 @@ class RouteRegistrar implements RouteRegistrarContract
     public function registerRoutesFromControllerAttribute(array $controllers): void
     {
         foreach ($controllers as $controller) {
-            if (!$controller instanceof Controller) {
+            $reflection = new ReflectionClass($controller);
+
+            if (!$reflection->implementsInterface(Controller::class)) {
                 continue;
             }
 
-            $reflection = new ReflectionClass($controller);
             $methods = $reflection->getMethods();
 
             foreach ($methods as $method) {
-                $attributes = $method->getAttributes(RouteAttribute::class);
+                $attribute = $method->getAttributes(RouteAttribute::class, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
 
-                foreach ($attributes as $attribute) {
-                    $route = $attribute->newInstance();
-
-                    $this->registerRoute($route->method, $route->uri, new Handler($controller::class, $method->getName()));
+                if (is_null($attribute)) {
+                    continue;
                 }
+
+                $route = $attribute->newInstance();
+
+                $this->registerRoute($route->method, $route->uri, new Handler($controller, $method->getName()));
             }
         }
     }

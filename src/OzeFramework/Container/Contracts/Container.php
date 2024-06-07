@@ -24,15 +24,18 @@ interface Container extends ContainerInterface
      *
      * @param string $abstract
      * @param null|Closure|string $concrete
+     * @return void
      */
     public function singleton(string $abstract, null|Closure|string $concrete = null): void;
 
     /**
      * Resolve an instance of the given type.
      *
-     * @param string $abstract
+     * @template T
+     *
+     * @param class-string<T> $abstract
      * @param array $parameters
-     * @return mixed
+     * @return T
      */
     public function make(string $abstract, array $parameters = []): mixed;
 }

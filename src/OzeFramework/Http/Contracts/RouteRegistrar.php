@@ -23,7 +23,7 @@ interface RouteRegistrar
     /**
      * Register routes from controller attributes.
      *
-     * @param Controller[] $controllers
+     * @param class-string<Controller>[] $controllers
      * @return void
      */
     public function registerRoutesFromControllerAttribute(array $controllers): void;

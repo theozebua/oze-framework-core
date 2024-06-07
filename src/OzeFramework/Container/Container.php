@@ -96,7 +96,10 @@ class Container implements ContainerContract
     /**
      * Resolve a binding from the container.
      *
+     * @param string $abstract
+     * @param array<string, mixed> $parameters
      * @throws BindingResolutionException
+     * @return mixed
      */
     protected function resolve(string $abstract, array $parameters = []): mixed
     {
@@ -121,7 +124,10 @@ class Container implements ContainerContract
     /**
      * Build an instance of the given concrete type.
      *
+     * @param Closure|string $concrete
+     * @param array<string, mixed> $parameters
      * @throws BindingResolutionException
+     * @return mixed
      */
     protected function build(Closure|string $concrete, array $parameters = []): mixed
     {
@@ -153,7 +159,9 @@ class Container implements ContainerContract
     /**
      * Resolve all dependencies for a given set of parameters.
      *
-     * @param  ReflectionParameter[]  $dependencies
+     * @param ReflectionParameter[]  $dependencies
+     * @param array<string, mixed> $parameters
+     * @throws BindingResolutionException
      * @return array<int, mixed>
      */
     protected function resolveDependencies(array $dependencies, array $parameters = []): array
@@ -164,7 +172,10 @@ class Container implements ContainerContract
     /**
      * Resolve a single dependency.
      *
+     * @param ReflectionParameter $dependency
+     * @param array<string, mixed> $parameters
      * @throws BindingResolutionException
+     * @return mixed
      */
     protected function resolveDependency(ReflectionParameter $dependency, array $parameters = []): mixed
     {
