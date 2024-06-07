@@ -7,8 +7,8 @@ namespace OzeFramework\App;
 use OzeFramework\App\Contracts\App as AppContract;
 use OzeFramework\Container\Container;
 use OzeFramework\Env\Loader;
-use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
-use OzeFramework\Http\RouteRegistrar;
+use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
+use OzeFramework\Routing\RouteRegistrar;
 
 class App extends Container implements AppContract
 {
