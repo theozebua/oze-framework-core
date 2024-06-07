@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Http;
+namespace OzeFramework\Routing;
 
 use Closure;
 use OzeFramework\Container\Container;
-use OzeFramework\Http\Attributes\Route as RouteAttribute;
-use OzeFramework\Http\Contracts\Controller;
-use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
-use OzeFramework\Http\Enums\HttpMethod;
+use OzeFramework\Routing\Attributes\Route as RouteAttribute;
+use OzeFramework\Routing\Contracts\Controller;
+use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
+use OzeFramework\Routing\Enums\HttpMethod;
 use ReflectionAttribute;
 use ReflectionClass;
 

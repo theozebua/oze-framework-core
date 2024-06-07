@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Http;
+namespace OzeFramework\Routing;
 
 use Closure;
-use OzeFramework\Http\Enums\HttpMethod;
+use OzeFramework\Routing\Enums\HttpMethod;
 
 final readonly class Route
 {

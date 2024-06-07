@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Tests\Http\Routing;
+namespace OzeFramework\Tests\Routing\Routing;
 
 use OzeFramework\Container\Container;
-use OzeFramework\Http\Contracts\RouteRegistrar as RouteRegistrarContract;
-use OzeFramework\Http\Handler;
-use OzeFramework\Http\Route;
-use OzeFramework\Http\RouteRegistrar;
-use OzeFramework\Tests\Http\Helpers\Controller\ControllerWithRouteAttribute;
-use OzeFramework\Tests\Http\Helpers\Controller\RegularController;
+use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
+use OzeFramework\Routing\Handler;
+use OzeFramework\Routing\Route;
+use OzeFramework\Routing\RouteRegistrar;
+use OzeFramework\Tests\Routing\Helpers\Controller\ControllerWithRouteAttribute;
+use OzeFramework\Tests\Routing\Helpers\Controller\RegularController;
 use PHPUnit\Framework\TestCase;
 
 final class RouteRegistrarTest extends TestCase

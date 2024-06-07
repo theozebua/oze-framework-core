@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Http;
+namespace OzeFramework\Routing;
 
-use OzeFramework\Http\Contracts\Controller;
+use OzeFramework\Routing\Contracts\Controller;
 
 final readonly class Handler
 {

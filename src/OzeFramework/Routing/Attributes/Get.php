@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Http\Attributes;
+namespace OzeFramework\Routing\Attributes;
 
 use Attribute;
-use OzeFramework\Http\Enums\HttpMethod;
+use OzeFramework\Routing\Enums\HttpMethod;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Post extends Route
+class Get extends Route
 {
     /**
-     * Create a new POST route attribute instance.
+     * Create a new GET route attribute instance.
      *
      * @param string $uri
      * @return void
      */
     public function __construct(string $uri)
     {
-        parent::__construct(HttpMethod::POST, $uri);
+        parent::__construct(HttpMethod::GET, $uri);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Http\Enums;
+namespace OzeFramework\Routing\Enums;
 
 enum HttpMethod: string
 {

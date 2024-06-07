@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Tests\Http\Helpers\Controller;
+namespace OzeFramework\Tests\Routing\Helpers\Controller;
 
-use OzeFramework\Http\Contracts\Controller;
+use OzeFramework\Routing\Contracts\Controller;
 
 final class RegularController implements Controller
 {

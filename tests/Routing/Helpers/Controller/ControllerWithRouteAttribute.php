@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Tests\Http\Helpers\Controller;
+namespace OzeFramework\Tests\Routing\Helpers\Controller;
 
-use OzeFramework\Http\Attributes\Get;
-use OzeFramework\Http\Contracts\Controller;
+use OzeFramework\Routing\Attributes\Get;
+use OzeFramework\Routing\Contracts\Controller;
 
 final class ControllerWithRouteAttribute implements Controller
 {

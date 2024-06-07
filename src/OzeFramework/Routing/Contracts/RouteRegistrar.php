@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Http\Contracts;
+namespace OzeFramework\Routing\Contracts;
 
 use Closure;
-use OzeFramework\Http\Enums\HttpMethod;
-use OzeFramework\Http\Handler;
+use OzeFramework\Routing\Enums\HttpMethod;
+use OzeFramework\Routing\Handler;
 
 interface RouteRegistrar
 {
