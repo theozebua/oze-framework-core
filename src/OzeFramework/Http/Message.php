@@ -28,6 +28,11 @@ abstract class Message implements MessageInterface
     protected Headers $headers;
 
     /**
+     * @var StreamInterface $body
+     */
+    protected StreamInterface $body;
+
+    /**
      * {@inheritdoc}
      */
     public function getProtocolVersion(): string
@@ -118,7 +123,7 @@ abstract class Message implements MessageInterface
 
         $clone->headers->setHeader($name, $value);
 
-        $this->setupResponseHeader($clone, $name);
+        $this->addResponseHeader($clone, $name);
 
         return $clone;
     }
@@ -138,11 +143,33 @@ abstract class Message implements MessageInterface
 
         if (!$clone->headers->hasHeader($name)) {
             $clone->headers->addHeader($name, $value);
+        } else {
+            $values = $clone->getHeader($name);
+
+            if (!in_array($value, $values)) {
+                $values[] = $value;
+
+                $clone->headers->setHeader($name, $values);
+            }
         }
 
-        // TODO: check if header already exists and append values to it
+        $this->addResponseHeader($clone, $name);
 
-        $this->setupResponseHeader($clone, $name);
+        return $clone;
+    }
+
+    /**
+     * {@inheritdoc}
+     * 
+     * Header resolution MUST be done without case-sensitivity.
+     */
+    public function withoutHeader(string $name): MessageInterface
+    {
+        $clone = clone $this;
+
+        $clone->headers->removeHeader($name);
+
+        $this->removeResponseHeader($clone, $name);
 
         return $clone;
     }
@@ -152,17 +179,30 @@ abstract class Message implements MessageInterface
      */
     public function getBody(): StreamInterface
     {
-        throw new \Exception('Implement this method');
+        return $this->body;
     }
 
     /**
      * {@inheritdoc}
+     * 
+     * The body MUST be a StreamInterface object.
      */
     public function withBody(StreamInterface $body): MessageInterface
     {
-        throw new \Exception('Implement this method');
+        $clone = clone $this;
+
+        $clone->body = $body;
+
+        return $clone;
     }
 
+    /**
+     * Validate header value.
+     * 
+     * @param mixed $value 
+     * @throws InvalidArgumentException
+     * @return void
+     */
     protected function validateHeaderValue(mixed $value): void
     {
         if (!is_string($value) || !is_array($value)) {
@@ -170,10 +210,31 @@ abstract class Message implements MessageInterface
         }
     }
 
-    protected function setupResponseHeader(MessageInterface $clone, string $name): void
+    /**
+     * Add response header.
+     * 
+     * @param MessageInterface $clone
+     * @param string $name
+     * @return void
+     */
+    protected function addResponseHeader(MessageInterface $clone, string $name): void
     {
         if ($clone instanceof ResponseInterface) {
             header(sprintf('%s: %s', $name, $clone->getHeaderLine($name)));
+        }
+    }
+
+    /**
+     * Remove response header.
+     * 
+     * @param MessageInterface $clone
+     * @param string $name
+     * @return void
+     */
+    protected function removeResponseHeader(MessageInterface $clone, string $name): void
+    {
+        if ($clone instanceof ResponseInterface) {
+            header_remove($name);
         }
     }
 }
