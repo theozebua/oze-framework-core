@@ -11,6 +11,14 @@ class Uri implements UriInterface
     /**
      * {@inheritdoc}
      */
+    public function __toString(): string
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getScheme(): string
     {
         throw new \Exception('Not implemented');
@@ -124,14 +132,6 @@ class Uri implements UriInterface
      * {@inheritdoc}
      */
     public function withFragment(string $fragment): UriInterface
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __toString(): string
     {
         throw new \Exception('Not implemented');
     }

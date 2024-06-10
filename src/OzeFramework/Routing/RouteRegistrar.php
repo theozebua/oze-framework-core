@@ -6,10 +6,10 @@ namespace OzeFramework\Routing;
 
 use Closure;
 use OzeFramework\Container\Container;
+use OzeFramework\Http\Enums\HttpMethod;
 use OzeFramework\Routing\Attributes\Route as RouteAttribute;
 use OzeFramework\Routing\Contracts\Controller;
 use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
-use OzeFramework\Http\Enums\HttpMethod;
 use ReflectionAttribute;
 use ReflectionClass;
 
