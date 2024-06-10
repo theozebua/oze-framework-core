@@ -13,6 +13,7 @@ class Head extends Route
     /**
      * Create a new HEAD route attribute instance.
      *
+     * @param string $uri
      * @return void
      */
     public function __construct(string $uri)

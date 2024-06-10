@@ -13,6 +13,7 @@ class Patch extends Route
     /**
      * Create a new PATCH route attribute instance.
      *
+     * @param string $uri
      * @return void
      */
     public function __construct(string $uri)

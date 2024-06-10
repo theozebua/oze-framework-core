@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use OzeFramework\Http\Enums\StatusCode;
 use Psr\Http\Message\ResponseInterface;
 
+use function sprintf;
+
 class Response extends Message implements ResponseInterface
 {
     /**

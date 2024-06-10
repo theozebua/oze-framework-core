@@ -13,6 +13,8 @@ use OzeFramework\Tests\Routing\Helpers\Controller\ControllerWithRouteAttribute;
 use OzeFramework\Tests\Routing\Helpers\Controller\RegularController;
 use PHPUnit\Framework\TestCase;
 
+use function strtoupper;
+
 final class RouteRegistrarTest extends TestCase
 {
     protected Container $container;
@@ -36,7 +38,7 @@ final class RouteRegistrarTest extends TestCase
 
         foreach ($methods as $method) {
             // Register routes with closure handler
-            $this->routeRegistrar->{$method}('/', fn (): string => strtoupper($method).' Route');
+            $this->routeRegistrar->{$method}('/', fn (): string => strtoupper($method) . ' Route');
         }
 
         // Register routes with controller

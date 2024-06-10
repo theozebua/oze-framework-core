@@ -13,6 +13,8 @@ use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
 use ReflectionAttribute;
 use ReflectionClass;
 
+use function is_null;
+
 class RouteRegistrar implements RouteRegistrarContract
 {
     /** @var Route[] */

@@ -6,12 +6,22 @@ namespace OzeFramework\Http;
 
 use OzeFramework\Http\Contracts\Headers as HeadersContract;
 
+use function array_filter;
+use function array_keys;
+use function array_map;
+use function function_exists;
+use function getallheaders;
+use function is_array;
+use function is_string;
+use function str_starts_with;
+use function strtolower;
+
 class Headers implements HeadersContract
 {
     /**
      * Create a new headers instance.
      *
-     * @param  Header[]  $headers
+     * @param Header[] $headers
      * @return void
      */
     public function __construct(protected array $headers = [])
@@ -19,6 +29,11 @@ class Headers implements HeadersContract
         //
     }
 
+    /**
+     * Create a new headers instance from globals.
+     *
+     * @return static
+     */
     public static function createFromGlobals(): static
     {
         $headers = [];
@@ -27,7 +42,7 @@ class Headers implements HeadersContract
             $headers = getallheaders();
         }
 
-        if (! is_array($headers)) {
+        if (!is_array($headers)) {
             $headers = [];
         }
 

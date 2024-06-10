@@ -10,6 +10,15 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
+use function get_debug_type;
+use function header;
+use function header_remove;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_string;
+use function sprintf;
+
 abstract class Message implements MessageInterface
 {
     /**
@@ -36,8 +45,8 @@ abstract class Message implements MessageInterface
      */
     public function withProtocolVersion(string $version): MessageInterface
     {
-        if (! in_array($version, self::SUPPORTED_PROTOCOLS)) {
-            throw new UnsupportedHttpProtocolVersion("Protocol version [{$version}] is not supported. Supported versions: ".implode(', ', self::SUPPORTED_PROTOCOLS));
+        if (!in_array($version, self::SUPPORTED_PROTOCOLS)) {
+            throw new UnsupportedHttpProtocolVersion("Protocol version [{$version}] is not supported. Supported versions: " . implode(', ', self::SUPPORTED_PROTOCOLS));
         }
 
         $clone = clone $this;
@@ -108,12 +117,12 @@ abstract class Message implements MessageInterface
 
         $clone = clone $this;
 
-        if (! $clone->headers->hasHeader($name)) {
+        if (!$clone->headers->hasHeader($name)) {
             $clone->headers->addHeader($name, $value);
         } else {
             $values = $clone->getHeader($name);
 
-            if (! in_array($value, $values)) {
+            if (!in_array($value, $values)) {
                 $values[] = $value;
 
                 $clone->headers->setHeader($name, $values);
@@ -166,8 +175,8 @@ abstract class Message implements MessageInterface
      */
     protected function validateHeaderValue(mixed $value): void
     {
-        if (! is_string($value) || ! is_array($value)) {
-            throw new InvalidArgumentException('Header value must be a string or an array of strings; received '.get_debug_type($value));
+        if (!is_string($value) || !is_array($value)) {
+            throw new InvalidArgumentException('Header value must be a string or an array of strings; received ' . get_debug_type($value));
         }
     }
 

@@ -13,6 +13,10 @@ use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
 
+use function array_key_exists;
+use function array_map;
+use function is_null;
+
 class Container implements ContainerContract
 {
     /** @var Container|null Container instance */
@@ -95,8 +99,8 @@ class Container implements ContainerContract
      * Resolve a binding from the container.
      *
      * @param  array<string, mixed>  $parameters
-     *
      * @throws BindingResolutionException
+     * @return mixed
      */
     protected function resolve(string $abstract, array $parameters = []): mixed
     {
@@ -122,8 +126,8 @@ class Container implements ContainerContract
      * Build an instance of the given concrete type.
      *
      * @param  array<string, mixed>  $parameters
-     *
      * @throws BindingResolutionException
+     * @return mixed
      */
     protected function build(Closure|string $concrete, array $parameters = []): mixed
     {
@@ -157,9 +161,8 @@ class Container implements ContainerContract
      *
      * @param  ReflectionParameter[]  $dependencies
      * @param  array<string, mixed>  $parameters
-     * @return array<int, mixed>
-     *
      * @throws BindingResolutionException
+     * @return array<int, mixed>
      */
     protected function resolveDependencies(array $dependencies, array $parameters = []): array
     {
@@ -170,8 +173,8 @@ class Container implements ContainerContract
      * Resolve a single dependency.
      *
      * @param  array<string, mixed>  $parameters
-     *
      * @throws BindingResolutionException
+     * @return mixed
      */
     protected function resolveDependency(ReflectionParameter $dependency, array $parameters = []): mixed
     {
