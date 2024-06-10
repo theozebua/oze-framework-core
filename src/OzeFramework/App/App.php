@@ -34,9 +34,9 @@ class App extends Container implements AppContract
      */
     public function __construct(string $basePath)
     {
-        $this->appPath = $basePath.'/app';
+        $this->appPath = $basePath . '/app';
         $this->basePath = $basePath;
-        $this->configPath = $basePath.'/config';
+        $this->configPath = $basePath . '/config';
 
         (new Loader($this->basePath))->load();
     }

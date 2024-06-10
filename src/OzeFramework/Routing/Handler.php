@@ -12,6 +12,7 @@ final readonly class Handler
      * Create a new handler instance.
      *
      * @param  class-string<Controller>  $controller
+     * @param  string  $method
      * @return void
      */
     public function __construct(public string $controller, public string $method)

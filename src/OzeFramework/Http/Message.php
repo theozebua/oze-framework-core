@@ -22,14 +22,31 @@ use function sprintf;
 abstract class Message implements MessageInterface
 {
     /**
+     * Supported HTTP protocol versions.
+     *
      * @var string[]
      */
     protected const array SUPPORTED_PROTOCOLS = ['1.1', '2.0'];
 
+    /**
+     * HTTP protocol version.
+     *
+     * @var string $protocolVersion
+     */
     protected string $protocolVersion = '1.1';
 
+    /**
+     * HTTP headers.
+     *
+     * @var Headers $headers
+     */
     protected Headers $headers;
 
+    /**
+     * HTTP body.
+     *
+     * @var StreamInterface $body
+     */
     protected StreamInterface $body;
 
     /**
