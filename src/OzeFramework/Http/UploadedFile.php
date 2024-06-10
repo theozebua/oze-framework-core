@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OzeFramework\Http;
 
+use Exception;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -14,7 +15,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getStream(): StreamInterface
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -22,7 +23,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function moveTo(string $targetPath): void
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -30,7 +31,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getSize(): ?int
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -38,7 +39,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getError(): int
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -46,7 +47,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getClientFilename(): ?string
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -54,6 +55,6 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getClientMediaType(): ?string
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 }

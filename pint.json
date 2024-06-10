@@ -38,6 +38,11 @@
     },
     "blank_line_between_import_groups": true,
     "blank_lines_before_namespace": true,
-    "cast_spaces": true
+    "cast_spaces": true,
+    "global_namespace_import": {
+      "import_classes": true,
+      "import_constants": true,
+      "import_functions": true
+    }
   }
 }

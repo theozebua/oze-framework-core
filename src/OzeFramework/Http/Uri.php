@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OzeFramework\Http;
 
+use Exception;
 use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
@@ -13,7 +14,7 @@ class Uri implements UriInterface
      */
     public function __toString(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -21,7 +22,7 @@ class Uri implements UriInterface
      */
     public function getScheme(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -29,7 +30,7 @@ class Uri implements UriInterface
      */
     public function getAuthority(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -37,7 +38,7 @@ class Uri implements UriInterface
      */
     public function getUserInfo(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -45,7 +46,7 @@ class Uri implements UriInterface
      */
     public function getHost(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -53,7 +54,7 @@ class Uri implements UriInterface
      */
     public function getPort(): ?int
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -61,7 +62,7 @@ class Uri implements UriInterface
      */
     public function getPath(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -69,7 +70,7 @@ class Uri implements UriInterface
      */
     public function getQuery(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -77,7 +78,7 @@ class Uri implements UriInterface
      */
     public function getFragment(): string
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -85,7 +86,7 @@ class Uri implements UriInterface
      */
     public function withScheme(string $scheme): UriInterface
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -93,7 +94,7 @@ class Uri implements UriInterface
      */
     public function withUserInfo(string $user, ?string $password = null): UriInterface
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -101,7 +102,7 @@ class Uri implements UriInterface
      */
     public function withHost(string $host): UriInterface
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -109,7 +110,7 @@ class Uri implements UriInterface
      */
     public function withPort(?int $port): UriInterface
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -117,7 +118,7 @@ class Uri implements UriInterface
      */
     public function withPath(string $path): UriInterface
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -125,7 +126,7 @@ class Uri implements UriInterface
      */
     public function withQuery(string $query): UriInterface
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
@@ -133,6 +134,6 @@ class Uri implements UriInterface
      */
     public function withFragment(string $fragment): UriInterface
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 }

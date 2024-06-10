@@ -52,7 +52,7 @@ class Container implements ContainerContract
      */
     public function get(string $id): mixed
     {
-        if (! $this->has($id)) {
+        if (!$this->has($id)) {
             throw new EntryNotFoundException("Entry [{$id}] not found.");
         }
 
@@ -104,7 +104,7 @@ class Container implements ContainerContract
             return $this->instances[$abstract];
         }
 
-        if (! isset($this->bindings[$abstract])) {
+        if (!isset($this->bindings[$abstract])) {
             $this->bind($abstract);
         }
 
@@ -137,7 +137,7 @@ class Container implements ContainerContract
             throw new BindingResolutionException("Target class [{$concrete}] does not exist.", previous: $e);
         }
 
-        if (! $reflectionClass->isInstantiable()) {
+        if (!$reflectionClass->isInstantiable()) {
             throw new BindingResolutionException("Target class [{$concrete}] is not instantiable.");
         }
 
@@ -177,7 +177,7 @@ class Container implements ContainerContract
     {
         $type = $dependency->getType();
 
-        if ($type instanceof ReflectionNamedType && ! $type->isBuiltin()) {
+        if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
             if ($dependency->isDefaultValueAvailable()) {
                 return $dependency->getDefaultValue();
             }

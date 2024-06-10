@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OzeFramework\Http;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ServerRequest extends Request implements ServerRequestInterface
@@ -13,7 +14,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getServerParams(): array
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -21,7 +22,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getCookieParams(): array
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -29,7 +30,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withCookieParams(array $cookies): ServerRequestInterface
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -37,7 +38,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getQueryParams(): array
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -45,7 +46,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withQueryParams(array $query): ServerRequestInterface
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -53,7 +54,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getUploadedFiles(): array
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -61,7 +62,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -69,7 +70,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getParsedBody()
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -77,7 +78,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withParsedBody($data): ServerRequestInterface
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -85,7 +86,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getAttributes(): array
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -93,7 +94,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getAttribute(string $name, $default = null)
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -101,7 +102,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withAttribute(string $name, $value): ServerRequestInterface
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 
     /**
@@ -109,6 +110,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withoutAttribute(string $name): ServerRequestInterface
     {
-        throw new \Exception('Not implemented.');
+        throw new Exception('Not implemented.');
     }
 }
