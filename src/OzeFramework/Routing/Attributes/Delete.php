@@ -13,7 +13,6 @@ class Delete extends Route
     /**
      * Create a new DELETE route attribute instance.
      *
-     * @param string $uri
      * @return void
      */
     public function __construct(string $uri)

@@ -15,13 +15,12 @@ use ReflectionClass;
 
 class RouteRegistrar implements RouteRegistrarContract
 {
-    /** @var Route[] $routes */
+    /** @var Route[] */
     protected array $routes = [];
 
     /**
      * Create a new RouteRegistrar instance.
      *
-     * @param Container|null $container
      * @return void
      */
     public function __construct(protected ?Container $container = null)
@@ -37,7 +36,7 @@ class RouteRegistrar implements RouteRegistrarContract
         foreach ($controllers as $controller) {
             $reflection = new ReflectionClass($controller);
 
-            if (!$reflection->implementsInterface(Controller::class)) {
+            if (! $reflection->implementsInterface(Controller::class)) {
                 continue;
             }
 

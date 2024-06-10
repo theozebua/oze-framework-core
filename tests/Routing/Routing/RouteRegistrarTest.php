@@ -36,7 +36,7 @@ final class RouteRegistrarTest extends TestCase
 
         foreach ($methods as $method) {
             // Register routes with closure handler
-            $this->routeRegistrar->{$method}('/', fn (): string => strtoupper($method) . ' Route');
+            $this->routeRegistrar->{$method}('/', fn (): string => strtoupper($method).' Route');
         }
 
         // Register routes with controller

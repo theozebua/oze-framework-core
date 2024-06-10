@@ -6,7 +6,7 @@ namespace OzeFramework\Http;
 
 final readonly class Header
 {
-    public function __construct(public string $key, public string|array $values)
+    public function __construct(public string $key, public array $values)
     {
         //
     }

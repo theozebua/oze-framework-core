@@ -13,7 +13,6 @@ class Post extends Route
     /**
      * Create a new POST route attribute instance.
      *
-     * @param string $uri
      * @return void
      */
     public function __construct(string $uri)

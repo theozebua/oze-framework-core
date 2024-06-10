@@ -11,7 +11,6 @@ class Loader
     /**
      * Create a new environment loader instance.
      *
-     * @param string $path
      * @return void
      */
     public function __construct(protected string $path)

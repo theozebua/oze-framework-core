@@ -26,8 +26,6 @@ class Container implements ContainerContract
 
     /**
      * Get the singleton instance of the container.
-     *
-     * @return static
      */
     public static function getInstance(): static
     {
@@ -41,7 +39,7 @@ class Container implements ContainerContract
     /**
      * Set the container instance.
      *
-     * @param Container $container
+     * @param  Container  $container
      * @return Container
      */
     public static function setInstance(ContainerContract $container): ContainerContract
@@ -54,7 +52,7 @@ class Container implements ContainerContract
      */
     public function get(string $id): mixed
     {
-        if (!$this->has($id)) {
+        if (! $this->has($id)) {
             throw new EntryNotFoundException("Entry [{$id}] not found.");
         }
 
@@ -96,10 +94,9 @@ class Container implements ContainerContract
     /**
      * Resolve a binding from the container.
      *
-     * @param string $abstract
-     * @param array<string, mixed> $parameters
+     * @param  array<string, mixed>  $parameters
+     *
      * @throws BindingResolutionException
-     * @return mixed
      */
     protected function resolve(string $abstract, array $parameters = []): mixed
     {
@@ -107,7 +104,7 @@ class Container implements ContainerContract
             return $this->instances[$abstract];
         }
 
-        if (!isset($this->bindings[$abstract])) {
+        if (! isset($this->bindings[$abstract])) {
             $this->bind($abstract);
         }
 
@@ -124,10 +121,9 @@ class Container implements ContainerContract
     /**
      * Build an instance of the given concrete type.
      *
-     * @param Closure|string $concrete
-     * @param array<string, mixed> $parameters
+     * @param  array<string, mixed>  $parameters
+     *
      * @throws BindingResolutionException
-     * @return mixed
      */
     protected function build(Closure|string $concrete, array $parameters = []): mixed
     {
@@ -141,7 +137,7 @@ class Container implements ContainerContract
             throw new BindingResolutionException("Target class [{$concrete}] does not exist.", previous: $e);
         }
 
-        if (!$reflectionClass->isInstantiable()) {
+        if (! $reflectionClass->isInstantiable()) {
             throw new BindingResolutionException("Target class [{$concrete}] is not instantiable.");
         }
 
@@ -159,10 +155,11 @@ class Container implements ContainerContract
     /**
      * Resolve all dependencies for a given set of parameters.
      *
-     * @param ReflectionParameter[]  $dependencies
-     * @param array<string, mixed> $parameters
-     * @throws BindingResolutionException
+     * @param  ReflectionParameter[]  $dependencies
+     * @param  array<string, mixed>  $parameters
      * @return array<int, mixed>
+     *
+     * @throws BindingResolutionException
      */
     protected function resolveDependencies(array $dependencies, array $parameters = []): array
     {
@@ -172,16 +169,15 @@ class Container implements ContainerContract
     /**
      * Resolve a single dependency.
      *
-     * @param ReflectionParameter $dependency
-     * @param array<string, mixed> $parameters
+     * @param  array<string, mixed>  $parameters
+     *
      * @throws BindingResolutionException
-     * @return mixed
      */
     protected function resolveDependency(ReflectionParameter $dependency, array $parameters = []): mixed
     {
         $type = $dependency->getType();
 
-        if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+        if ($type instanceof ReflectionNamedType && ! $type->isBuiltin()) {
             if ($dependency->isDefaultValueAvailable()) {
                 return $dependency->getDefaultValue();
             }

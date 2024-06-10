@@ -10,8 +10,8 @@ class Headers implements HeadersContract
 {
     /**
      * Create a new headers instance.
-     * 
-     * @param Header[] $headers
+     *
+     * @param  Header[]  $headers
      * @return void
      */
     public function __construct(protected array $headers = [])
@@ -27,7 +27,7 @@ class Headers implements HeadersContract
             $headers = getallheaders();
         }
 
-        if (!is_array($headers)) {
+        if (! is_array($headers)) {
             $headers = [];
         }
 
@@ -136,8 +136,7 @@ class Headers implements HeadersContract
 
     /**
      * Wrap value into array if it's not already.
-     * 
-     * @param string|array $value
+     *
      * @return string[]
      */
     protected function wrap(string|array $value): array
