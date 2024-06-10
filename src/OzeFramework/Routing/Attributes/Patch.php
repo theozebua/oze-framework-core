@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OzeFramework\Routing\Attributes;
 
 use Attribute;
-use OzeFramework\Routing\Enums\HttpMethod;
+use OzeFramework\Http\Enums\HttpMethod;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class Patch extends Route

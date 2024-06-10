@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OzeFramework\Routing\Contracts;
 
 use Closure;
-use OzeFramework\Routing\Enums\HttpMethod;
+use OzeFramework\Http\Enums\HttpMethod;
 use OzeFramework\Routing\Handler;
 
 interface RouteRegistrar

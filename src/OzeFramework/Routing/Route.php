@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OzeFramework\Routing;
 
 use Closure;
-use OzeFramework\Routing\Enums\HttpMethod;
+use OzeFramework\Http\Enums\HttpMethod;
 
 final readonly class Route
 {

@@ -9,7 +9,7 @@ use OzeFramework\Container\Container;
 use OzeFramework\Routing\Attributes\Route as RouteAttribute;
 use OzeFramework\Routing\Contracts\Controller;
 use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
-use OzeFramework\Routing\Enums\HttpMethod;
+use OzeFramework\Http\Enums\HttpMethod;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -36,7 +36,7 @@ class RouteRegistrar implements RouteRegistrarContract
         foreach ($controllers as $controller) {
             $reflection = new ReflectionClass($controller);
 
-            if (! $reflection->implementsInterface(Controller::class)) {
+            if (!$reflection->implementsInterface(Controller::class)) {
                 continue;
             }
 
