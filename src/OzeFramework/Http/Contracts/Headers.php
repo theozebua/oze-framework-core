@@ -28,7 +28,7 @@ interface Headers
     /**
      * Add header.
      */
-    public function addHeader(string $key, string|array $values): Headers;
+    public function addHeader(string $key, array|string $values): Headers;
 
     /**
      * Add headers from array.
@@ -43,7 +43,7 @@ interface Headers
     /**
      * Set or replace existing header with new values.
      */
-    public function setHeader(string $key, string|array $values): Headers;
+    public function setHeader(string $key, array|string $values): Headers;
 
     /**
      * Set or replace existing headers with new values.

@@ -37,7 +37,7 @@ class Headers implements HeadersContract
             $headers = array_filter($_SERVER, fn (string $key): bool => str_starts_with($key, 'HTTP_'), ARRAY_FILTER_USE_KEY);
         }
 
-        $headers = array_map(fn (string $key, string|array $values): Header => new Header($key, $this->wrap($values)), array_keys($headers), $headers);
+        $headers = array_map(fn (string $key, array|string $values): Header => new Header($key, $this->wrap($values)), array_keys($headers), $headers);
 
         return new static($headers);
     }
@@ -75,7 +75,7 @@ class Headers implements HeadersContract
     /**
      * {@inheritdoc}
      */
-    public function addHeader(string $key, string|array $values): HeadersContract
+    public function addHeader(string $key, array|string $values): HeadersContract
     {
         $this->headers[] = new Header($key, $this->wrap($values));
 
@@ -111,7 +111,7 @@ class Headers implements HeadersContract
     /**
      * {@inheritdoc}
      */
-    public function setHeader(string $key, string|array $values): HeadersContract
+    public function setHeader(string $key, array|string $values): HeadersContract
     {
         foreach ($this->headers as $index => $header) {
             if ($header->key === $key) {
@@ -139,7 +139,7 @@ class Headers implements HeadersContract
      *
      * @return string[]
      */
-    protected function wrap(string|array $value): array
+    protected function wrap(array|string $value): array
     {
         return is_string($value) ? [$value] : $value;
     }

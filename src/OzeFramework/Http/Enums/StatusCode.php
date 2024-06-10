@@ -79,6 +79,11 @@ enum StatusCode: int
     case NOT_EXTENDED = 510;
     case NETWORK_AUTHENTICATION_REQUIRED = 511;
 
+    /**
+     * Get the reason phrase for the status code.
+     *
+     * @return string
+     */
     public function getReasonPhrase(): string
     {
         return str_replace(' ', '_', mb_convert_case($this->name, MB_CASE_TITLE, 'UTF-8'));

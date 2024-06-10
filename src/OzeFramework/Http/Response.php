@@ -65,9 +65,8 @@ class Response extends Message implements ResponseInterface
     /**
      * Set status code.
      *
-     * @return $this
-     *
      * @throws InvalidArgumentException
+     * @return Response
      */
     public function setStatusCode(int|StatusCode $statusCode, string $reasonPhrase = ''): self
     {
@@ -82,7 +81,9 @@ class Response extends Message implements ResponseInterface
     /**
      * Validate status code.
      *
+     * @param int $statusCode
      * @throws InvalidArgumentException
+     * @return void
      */
     protected function validateStatusCode(int $statusCode): void
     {
