@@ -28,11 +28,15 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Status code.
+     *
+     * @var int
      */
     protected int $statusCode;
 
     /**
      * Reason phrase.
+     *
+     * @var string
      */
     protected string $reasonPhrase;
 
@@ -67,6 +71,8 @@ class Response extends Message implements ResponseInterface
     /**
      * Set status code.
      *
+     * @param int|StatusCode $statusCode
+     * @param string $reasonPhrase
      * @throws InvalidArgumentException
      * @return Response
      */
