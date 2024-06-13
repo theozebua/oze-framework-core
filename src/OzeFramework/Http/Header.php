@@ -8,7 +8,7 @@ final readonly class Header
 {
     /**
      * Create a new header instance.
-     * 
+     *
      * @param string $key
      * @param array $values
      * @return void

@@ -32,7 +32,7 @@
   },
   "scripts": {
     "format": "./vendor/bin/php-cs-fixer fix",
-    "lint": "./vendor/bin/php-cs-fixer fix --dry-run",
+    "lint": "./vendor/bin/php-cs-fixer fix --dry-run --verbose",
     "test": "./vendor/bin/phpunit"
   },
   "minimum-stability": "dev",
