@@ -63,4 +63,27 @@ final class UriTest extends AbstractUri
 
         $this->assertSame('anchor', $fragment);
     }
+
+    public function testUriReturnsNewObjectWithModifiedScheme(): void
+    {
+        $uri = Uri::create($this->url);
+
+        $newUri = $uri->withScheme('https');
+
+        $this->assertSame('https', $newUri->getScheme());
+        $this->assertNotSame($uri, $newUri);
+    }
+
+    public function testUriReturnsNewObjectWithModifiedAuthorityAndUserInfo(): void
+    {
+        $uri = Uri::create($this->url);
+
+        $newUri = $uri->withUserInfo('newusername', 'newpassword');
+
+        $this->assertSame('newusername:newpassword', $newUri->getUserInfo());
+        $this->assertSame('newusername:newpassword@hostname:9090', $newUri->getAuthority());
+        $this->assertNotSame($uri, $newUri);
+    }
+
+    // TODO
 }

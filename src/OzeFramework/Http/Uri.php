@@ -169,7 +169,12 @@ class Uri implements UriInterface
      */
     public function withUserInfo(string $user, #[SensitiveParameter] ?string $password = null): UriInterface
     {
-        throw new Exception('Not implemented');
+        $clone = clone $this;
+
+        $clone->user = $user;
+        $clone->password = $password;
+
+        return $clone;
     }
 
     /**
