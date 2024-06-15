@@ -11,8 +11,14 @@ use SensitiveParameter;
 
 use function array_key_exists;
 use function array_keys;
+use function filter_var;
+use function implode;
 use function is_null;
+use function is_string;
 use function ltrim;
+use function preg_match;
+use function preg_replace_callback;
+use function rawurlencode;
 use function sprintf;
 use function str_starts_with;
 use function strtolower;
@@ -169,6 +175,8 @@ class Uri implements UriInterface
      */
     public function withUserInfo(string $user, #[SensitiveParameter] ?string $password = null): UriInterface
     {
+        $this->filterUserInfo($user, $password);
+
         $clone = clone $this;
 
         $clone->user = $user;
@@ -182,7 +190,13 @@ class Uri implements UriInterface
      */
     public function withHost(string $host): UriInterface
     {
-        throw new Exception('Not implemented');
+        $this->validateHost($host);
+
+        $clone = clone $this;
+
+        $clone->host = $host;
+
+        return $clone;
     }
 
     /**
@@ -244,9 +258,60 @@ class Uri implements UriInterface
             throw new InvalidArgumentException(sprintf(
                 'Scheme "%s" is not supported. Supported schemes: %s',
                 $scheme,
-                array_keys(self::SUPPORTED_SCHEMES),
+                implode(', ', array_keys(self::SUPPORTED_SCHEMES)),
             ));
         }
+    }
+
+    /**
+     * Filter the given user and password.
+     *
+     * @param null|string &$user
+     * @param null|string &$password
+     * @return void
+     */
+    protected function filterUserInfo(?string &$user, ?string &$password): void
+    {
+        $filter = function (?string &$info): string {
+            if (is_null($info)) {
+                return '';
+            }
+
+            $match =  preg_replace_callback(
+                '/(?:[^%a-zA-Z0-9_\-\.~\pL!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
+                function (array $matches): string {
+                    return rawurlencode($matches[0]);
+                },
+                $info,
+            );
+
+            return is_string($match) ? $match : '';
+        };
+
+        $filter($user);
+        $filter($password);
+    }
+
+    protected function validateHost(?string &$host): void
+    {
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return;
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $host = sprintf('[%s]', $host);
+
+            return;
+        }
+
+        if (
+            filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) &&
+            preg_match('/^(?=.{1,253}$)(?:(?!\d+\.?$)[a-zA-Z0-9-_]{1,63}\.?)+(?:[a-zA-Z]{2,})$/', $host) === 1
+        ) {
+            return;
+        }
+
+        throw new InvalidArgumentException('Host "' . $host . '" is not valid. Please use a valid host name.');
     }
 
     /**
@@ -283,7 +348,12 @@ class Uri implements UriInterface
      */
     protected function validatePath(?string &$path): void
     {
-        // TODO
+        // TODO: Add path validation
+        // $regex = '/^\/(?:[a-zA-Z0-9\-\._~!$&\'\(\)\*\+,;=:@]|%[0-9A-Fa-f]{2})*(?:\/(?:[a-zA-Z0-9\-\._~!$&\'\(\)\*\+,;=:@]|%[0-9A-Fa-f]{2})*)*$/';
+
+        // if (\preg_match($regex, $path) !== 1) {
+        //     throw new InvalidArgumentException("Invalid URI path: $path");
+        // }
     }
 
     /**

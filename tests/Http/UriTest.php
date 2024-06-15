@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OzeFramework\Tests\Http;
 
+use InvalidArgumentException;
 use OzeFramework\Http\Factory\Uri;
 
 final class UriTest extends AbstractUri
@@ -68,6 +69,10 @@ final class UriTest extends AbstractUri
     {
         $uri = Uri::create($this->url);
 
+        $this->expectException(InvalidArgumentException::class);
+
+        $uri->withScheme('invalid');
+
         $newUri = $uri->withScheme('https');
 
         $this->assertSame('https', $newUri->getScheme());
@@ -85,5 +90,39 @@ final class UriTest extends AbstractUri
         $this->assertNotSame($uri, $newUri);
     }
 
+    public function testUriReturnsNewObjectWithModifiedHost(): void
+    {
+        $uri = Uri::create($this->url);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $uri->withHost('1nv4l1d');
+
+        $newUri = $uri->withHost('newhostname');
+
+        $this->assertSame('newhostname', $newUri->getHost());
+        $this->assertNotSame($uri, $newUri);
+    }
+
+    public function testUriReturnsNewObjectWithModifiedPort(): void
+    {
+        $uri = Uri::create($this->url);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $uri->withPort(-1);
+
+        $newUri = $uri->withPort(8080);
+
+        $this->assertSame(8080, $newUri->getPort());
+        $this->assertNotSame($uri, $newUri);
+    }
+
     // TODO
+    // public function testUriReturnsNewObjectWithModifiedPath(): void
+    // {
+    //     $uri = Uri::create($this->url);
+
+
+    // }
 }
