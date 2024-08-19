@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OzeFramework\Tests\Routing\Routing;
+namespace OzeFramework\Tests\Routing;
 
 use OzeFramework\Container\Container;
 use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
