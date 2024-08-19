@@ -131,4 +131,35 @@ final class UriTest extends AbstractUri
         $this->assertSame('/newpath', $newUri->getPath());
         $this->assertNotSame($uri, $newUri);
     }
+
+    public function testUriReturnsNewObjectWithModifiedQuery(): void
+    {
+        $uri = Uri::create($this->url);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $uri->withQuery('?key=value');
+
+        $newUri = $uri->withQuery('newkey=newvalue');
+
+        $this->assertSame('newkey=newvalue', $newUri->getQuery());
+        $this->assertNotSame($uri, $newUri);
+    }
+
+    public function testUriReturnsNewObjectWithModifiedFragment(): void
+    {
+        $uri = Uri::create($this->url);
+
+        $newUri = $uri->withFragment('anchor');
+
+        $this->assertSame('anchor', $newUri->getFragment());
+        $this->assertNotSame($uri, $newUri);
+    }
+
+    public function testUriCanCastToString(): void
+    {
+        $uri = Uri::create($this->url);
+
+        $this->assertSame($this->url, (string) $uri);
+    }
 }

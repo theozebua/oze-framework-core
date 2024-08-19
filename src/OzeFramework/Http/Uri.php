@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OzeFramework\Http;
 
-use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use SensitiveParameter;
@@ -17,6 +16,7 @@ use function is_null;
 use function is_string;
 use function ltrim;
 use function preg_match;
+use function preg_replace;
 use function preg_replace_callback;
 use function rawurlencode;
 use function sprintf;
@@ -72,7 +72,40 @@ class Uri implements UriInterface
      */
     public function __toString(): string
     {
-        throw new Exception('Not implemented');
+        $uri = '';
+        $scheme = $this->getScheme();
+        $authority = $this->getAuthority();
+        $path = $this->getPath();
+        $query = $this->getQuery();
+        $fragment = $this->getFragment();
+
+        if ($scheme !== '') {
+            $uri .= sprintf('%s:', $scheme);
+        }
+
+        if ($authority !== '') {
+            $uri .= sprintf('//%s', $authority);
+        }
+
+        if ($path !== '') {
+            if ($authority !== '' && $path[0] !== '/') {
+                // If authority is present and path is rootless, prefix with "/"
+                $path = '/' . $path;
+            }
+            // Reduce multiple slashes to a single one if no authority is present
+            $path = preg_replace('/\/+/', '/', $path);
+            $uri .= $path;
+        }
+
+        if ($query !== '') {
+            $uri .= sprintf('?%s', $query);
+        }
+
+        if ($fragment !== '') {
+            $uri .= sprintf('#%s', $fragment);
+        }
+
+        return $uri;
     }
 
     /**
@@ -232,7 +265,13 @@ class Uri implements UriInterface
      */
     public function withQuery(string $query): UriInterface
     {
-        throw new Exception('Not implemented');
+        $this->validateQuery($query);
+
+        $clone = clone $this;
+
+        $clone->query = $query;
+
+        return $clone;
     }
 
     /**
@@ -240,7 +279,11 @@ class Uri implements UriInterface
      */
     public function withFragment(string $fragment): UriInterface
     {
-        throw new Exception('Not implemented');
+        $clone = clone $this;
+
+        $clone->fragment = $fragment;
+
+        return $clone;
     }
 
     /**
@@ -270,7 +313,7 @@ class Uri implements UriInterface
      * @param null|string &$password
      * @return void
      */
-    protected function filterUserInfo(?string &$user, ?string &$password): void
+    protected function filterUserInfo(?string &$user, #[SensitiveParameter] ?string &$password): void
     {
         $filter = function (?string &$info): string {
             if (is_null($info)) {
@@ -292,7 +335,14 @@ class Uri implements UriInterface
         $filter($password);
     }
 
-    protected function validateHost(?string &$host): void
+    /**
+     * Validate the given host.
+     *
+     * @param string &$host
+     * @throws InvalidArgumentException
+     * @return void
+     */
+    protected function validateHost(string &$host): void
     {
         if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return;
@@ -342,11 +392,11 @@ class Uri implements UriInterface
     /**
      * Validate the given path.
      *
-     * @param null|string &$path
+     * @param string &$path
      * @throws InvalidArgumentException
      * @return void
      */
-    protected function validatePath(?string &$path): void
+    protected function validatePath(string &$path): void
     {
         if (preg_match('/[?#]/', $path)) {
             throw new InvalidArgumentException('Path cannot contain query (?) or fragment (#) delimiters.');
@@ -358,11 +408,56 @@ class Uri implements UriInterface
 
         $path = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
-            fn (array $match) => rawurlencode($match[0]),
+            fn(array $match): string => rawurlencode($match[0]),
             $path,
         );
 
         $path = is_string($path) ? $path : '';
+    }
+
+    /**
+     * Validate the given query.
+     *
+     * @param string &$query
+     * @throws InvalidArgumentException
+     * @return void
+     */
+    protected function validateQuery(string &$query): void
+    {
+        if (preg_match('/[?#]/', $query)) {
+            throw new InvalidArgumentException('Query cannot contain query (?) or fragment (#) delimiters.');
+        }
+
+        if (preg_match('/%[^0-9A-Fa-f]{2}/', $query)) {
+            throw new InvalidArgumentException('Query contains an invalid percent-encoded sequence.');
+        }
+
+        $query = preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            fn(array $match): string => rawurlencode($match[0]),
+            $query,
+        );
+
+        $query = is_string($query) ? $query : '';
+    }
+
+    /**
+     * Filter the given fragment.
+     *
+     * @param string &$fragment
+     * @return void
+     */
+    protected function filterFragment(string &$fragment): void
+    {
+        $fragment = ltrim($fragment, '#');
+
+        $fragment = preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            fn(array $match): string => rawurlencode($match[0]),
+            $fragment,
+        );
+
+        $fragment = is_string($fragment) ? $fragment : '';
     }
 
     /**
