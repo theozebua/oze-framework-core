@@ -4,75 +4,72 @@ declare(strict_types=1);
 
 namespace OzeFramework\App;
 
-use Exception;
+use OzeFramework\App\Contracts\App as AppContract;
 use OzeFramework\Container\Container;
-use OzeFramework\Env\Environment;
-use OzeFramework\Interfaces\App\AppInterface;
-use OzeFramework\Router\Route;
+use OzeFramework\Env\Loader;
+use OzeFramework\Routing\Contracts\RouteRegistrar as RouteRegistrarContract;
+use OzeFramework\Routing\RouteRegistrar;
 
-class App implements AppInterface
+class App extends Container implements AppContract
 {
     /**
-     * The root path.
-     * 
-     * @var string $rootDir
+     * The path to the application directory.
      */
-    public static string $rootDir;
+    protected string $appPath;
 
     /**
-     * The environment variable class.
-     * 
-     * @var Environment $env
+     * The base path of the application.
      */
-    private static Environment $env;
+    protected string $basePath;
 
     /**
-     * Create the application.
-     * 
-     * @param string $rootDir
-     * 
+     * The path to the application config directory.
+     */
+    protected string $configPath;
+
+    /**
+     * Create a new App instance.
+     *
      * @return void
      */
-    final public function __construct(string $rootDir, private Container $container, private Route $route)
+    public function __construct(string $basePath)
     {
-        self::$rootDir = $rootDir;
+        $this->appPath = $basePath . '/app';
+        $this->basePath = $basePath;
+        $this->configPath = $basePath . '/config';
+
+        (new Loader($this->basePath))->load();
     }
 
     /**
      * {@inheritdoc}
      */
-    final public function setup(): void
+    public function setAppPath(string $path = 'app'): void
     {
-        static::$env = new Environment();
-
-        foreach ($_ENV as $key => $value) {
-            static::$env->$key = $value;
-        }
+        $this->appPath = $path;
     }
 
     /**
      * {@inheritdoc}
      */
-    final public function run(): void
+    public function setBasePath(string $path = ''): void
     {
-        try {
-            $requestMethod = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-            $this->route->routeRegistrar->setContainer($this->container);
-            echo $this->route->routeRegistrar->resolve($_SERVER['REQUEST_URI'], strtoupper($requestMethod));
-        } catch (Exception $e) {
-            throw $e;
-        }
+        $this->basePath = $path;
     }
 
     /**
-     * Get environment variable by the given key.
-     * 
-     * @param string $key
-     * 
-     * @return mixed
+     * {@inheritdoc}
      */
-    final public static function env(string $key): mixed
+    public function setConfigPath(string $path = 'config'): void
     {
-        return static::$env->get($key);
+        $this->configPath = $path;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function run(): void
+    {
+        $this->singleton(RouteRegistrarContract::class, fn (): RouteRegistrar => new RouteRegistrar($this));
     }
 }

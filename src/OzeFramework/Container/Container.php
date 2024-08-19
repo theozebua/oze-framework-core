@@ -4,179 +4,211 @@ declare(strict_types=1);
 
 namespace OzeFramework\Container;
 
-use ArgumentCountError;
 use Closure;
-use Exception;
+use OzeFramework\Container\Contracts\Container as ContainerContract;
+use OzeFramework\Container\Exceptions\BindingResolutionException;
+use OzeFramework\Container\Exceptions\CircularDependencyException;
+use OzeFramework\Container\Exceptions\EntryNotFoundException;
 use ReflectionClass;
-use ReflectionIntersectionType;
-use ReflectionMethod;
+use ReflectionException;
+use ReflectionNamedType;
 use ReflectionParameter;
-use ReflectionUnionType;
-use OzeFramework\Exceptions\Container\ContainerException;
-use OzeFramework\Exceptions\Container\NotFoundException;
-use OzeFramework\Interfaces\Container\ContainerInterface;
-use OzeFramework\Http\Response;
 
-final class Container implements ContainerInterface
+use function array_key_exists;
+use function array_map;
+use function is_null;
+
+class Container implements ContainerContract
 {
-    /**
-     * The Response class.
-     * 
-     * @var Response $response
-     */
-    private Response $response;
+    /** @var Container|null Container instance */
+    protected static ?Container $instance = null;
+
+    /** @var array<string, Binding> */
+    protected array $bindings = [];
+
+    /** @var array<string, mixed> Singleton instances */
+    protected array $instances = [];
 
     /**
-     * The class entries.
-     * 
-     * @var array<string, Closure|string> $entries
+     * Get the singleton instance of the container.
      */
-    private array $entries = [];
-
-    /**
-     * Create Container instance.
-     * 
-     * @return void
-     */
-    final public function __construct()
+    public static function getInstance(): static
     {
-        $this->response = new Response();
+        if (is_null(static::$instance)) {
+            static::$instance = new static();
+        }
+
+        return static::$instance;
+    }
+
+    /**
+     * Set the container instance.
+     *
+     * @param  Container  $container
+     * @return Container
+     */
+    public static function setInstance(ContainerContract $container): ContainerContract
+    {
+        return static::$instance = $container;
     }
 
     /**
      * {@inheritdoc}
      */
-    final public function get(string $id): mixed
+    public function get(string $id): mixed
     {
+        if (!$this->has($id)) {
+            throw new EntryNotFoundException("Entry [{$id}] not found.");
+        }
+
+        return $this->resolve($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $id): bool
+    {
+        return isset($this->bindings[$id]) || isset($this->instances[$id]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function bind(string $abstract, null|Closure|string $concrete = null, bool $singleton = false): void
+    {
+        $this->bindings[$abstract] = new Binding($concrete ?? $abstract, $singleton);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function singleton(string $abstract, null|Closure|string $concrete = null): void
+    {
+        $this->bind($abstract, $concrete, true);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function make(string $abstract, array $parameters = []): mixed
+    {
+        return $this->resolve($abstract, $parameters);
+    }
+
+    /**
+     * Resolve a binding from the container.
+     *
+     * @param  array<string, mixed>  $parameters
+     * @throws BindingResolutionException
+     * @return mixed
+     */
+    protected function resolve(string $abstract, array $parameters = []): mixed
+    {
+        static $resolving = [];
+
+        if (isset($resolving[$abstract])) {
+            throw new CircularDependencyException("Circular dependency detected for [{$abstract}]");
+        }
+
+        $resolving[$abstract] = true;
+
         try {
-            return $this->resolve($id);
-        } catch (Exception $e) {
-            if ($e instanceof ContainerException) {
-                throw $e;
+            if (isset($this->instances[$abstract])) {
+                return $this->instances[$abstract];
             }
 
-            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
-            throw new NotFoundException("No entry was found for {$id} identifier.");
-        } catch (ArgumentCountError $e) {
-            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
-            throw new ContainerException($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(), $e->getCode());
+            if (!isset($this->bindings[$abstract])) {
+                $this->bind($abstract);
+            }
+
+            $binding = $this->bindings[$abstract];
+            $object = $this->build($binding->concrete, $parameters);
+
+            if ($binding->singleton) {
+                $this->instances[$abstract] = $object;
+            }
+
+            return $object;
+        } finally {
+            unset($resolving[$abstract]);
         }
     }
 
     /**
-     * {@inheritdoc}
+     * Build an instance of the given concrete type.
+     *
+     * @param  array<string, mixed>  $parameters
+     * @throws BindingResolutionException
+     * @return mixed
      */
-    final public function has(string $id): bool
+    protected function build(Closure|string $concrete, array $parameters = []): mixed
     {
-        return isset($this->entries[$id]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    final public function bind(string $id, Closure|string $concrete): void
-    {
-        $this->entries[$id] = $concrete;
-    }
-
-    /**
-     * Get all method dependencies.
-     * 
-     * @param object $object
-     * @param string $method
-     * 
-     * @return array
-     */
-    final public function getMethodDependencies(object $object, string $method): array
-    {
-        $reflectionMethod = new ReflectionMethod($object, $method);
-
-        if ($reflectionMethod->getNumberOfParameters() === 0) {
-            return [];
+        if ($concrete instanceof Closure) {
+            return $concrete($this);
         }
 
-        $params       = $reflectionMethod->getParameters();
-        $dependencies = [];
-
-        $this->resolveDependencies($params, $dependencies);
-
-        return $dependencies;
-    }
-
-    /**
-     * Recursively resolve an entry and its dependencies.
-     * 
-     * @param string $id Identifier of the entry to look for.
-     * 
-     * @return object
-     */
-    private function resolve(string $id): object
-    {
-        $reflectionClass = new ReflectionClass($id);
+        try {
+            $reflectionClass = new ReflectionClass($concrete);
+        } catch (ReflectionException $e) {
+            throw new BindingResolutionException("Target class [{$concrete}] does not exist.", previous: $e);
+        }
 
         if (!$reflectionClass->isInstantiable()) {
-            if ($this->has($id)) {
-                $entry = $this->entries[$id];
-
-                if ($entry instanceof Closure) {
-                    return $entry($this);
-                }
-
-                return $this->resolve($entry);
-            }
-
-            $this->response->statusCode(Response::INTERNAL_SERVER_ERROR);
-            throw new ContainerException("Class {$id} is not instantiable");
+            throw new BindingResolutionException("Target class [{$concrete}] is not instantiable.");
         }
 
         $constructor = $reflectionClass->getConstructor();
 
-        if (is_null($constructor) || $constructor->getNumberOfParameters() === 0) {
+        if (is_null($constructor)) {
             return $reflectionClass->newInstance();
         }
 
-        $params       = $constructor->getParameters();
-        $dependencies = [];
+        $dependencies = $constructor->getParameters();
 
-        $this->resolveDependencies($params, $dependencies);
-
-        return $reflectionClass->newInstance(...$dependencies);
+        return $reflectionClass->newInstanceArgs($this->resolveDependencies($dependencies, $parameters));
     }
 
     /**
-     * Resolve the dependencies.
-     * 
-     * @param array<int, ReflectionParameter> $params
-     * @param array $dependencies
-     * 
-     * @return void
+     * Resolve all dependencies for a given set of parameters.
+     *
+     * @param  ReflectionParameter[]  $dependencies
+     * @param  array<string, mixed>  $parameters
+     * @throws BindingResolutionException
+     * @return array<int, mixed>
      */
-    private function resolveDependencies(array $params, array &$dependencies): void
+    protected function resolveDependencies(array $dependencies, array $parameters = []): array
     {
-        foreach ($params as $param) {
-            if (!$param->hasType()) {
-                continue;
+        return array_map(fn (ReflectionParameter $dependency) => $this->resolveDependency($dependency, $parameters), $dependencies);
+    }
+
+    /**
+     * Resolve a single dependency.
+     *
+     * @param  array<string, mixed>  $parameters
+     * @throws BindingResolutionException
+     * @return mixed
+     */
+    protected function resolveDependency(ReflectionParameter $dependency, array $parameters = []): mixed
+    {
+        $type = $dependency->getType();
+
+        if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+            if ($dependency->isDefaultValueAvailable()) {
+                return $dependency->getDefaultValue();
             }
 
-            $type = $param->getType();
-
-            if ($type instanceof ReflectionUnionType || $type instanceof ReflectionIntersectionType) {
-                throw new ContainerException("Union type and Intersection type is not supported yet.");
-            }
-
-            if ($type->isBuiltin()) {
-                if ($param->isDefaultValueAvailable()) {
-                    $dependencies[$param->name] = $param->getDefaultValue();
-                }
-
-                if (!$param->isDefaultValueAvailable() && $param->allowsNull()) {
-                    $dependencies[$param->name] = null;
-                }
-
-                continue;
-            }
-
-            $dependencies[$param->name] = $this->resolve($type->getName());
+            return $this->get($type->getName());
         }
+
+        if (array_key_exists($dependency->name, $parameters)) {
+            return $parameters[$dependency->name];
+        }
+
+        if ($dependency->isDefaultValueAvailable()) {
+            return $dependency->getDefaultValue();
+        }
+
+        throw new BindingResolutionException("Cannot resolve dependency [{$dependency->name}]");
     }
 }

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace OzeFramework\Http;
 
 use Exception;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
-class Request extends Message implements RequestInterface
+class UploadedFile implements UploadedFileInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function getRequestTarget(): string
+    public function getStream(): StreamInterface
     {
         throw new Exception('Not implemented.');
     }
@@ -21,7 +21,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withRequestTarget(string $requestTarget): RequestInterface
+    public function moveTo(string $targetPath): void
     {
         throw new Exception('Not implemented.');
     }
@@ -29,7 +29,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getMethod(): string
+    public function getSize(): ?int
     {
         throw new Exception('Not implemented.');
     }
@@ -37,7 +37,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withMethod(string $method): RequestInterface
+    public function getError(): int
     {
         throw new Exception('Not implemented.');
     }
@@ -45,7 +45,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getUri(): UriInterface
+    public function getClientFilename(): ?string
     {
         throw new Exception('Not implemented.');
     }
@@ -53,7 +53,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
+    public function getClientMediaType(): ?string
     {
         throw new Exception('Not implemented.');
     }
