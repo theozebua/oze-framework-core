@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace OzeFramework\Tests\Container;
 
 use OzeFramework\Container\Container;
+use OzeFramework\Container\Exceptions\BindingResolutionException;
+use OzeFramework\Container\Exceptions\CircularDependencyException;
+use OzeFramework\Container\Exceptions\EntryNotFoundException;
+use OzeFramework\Tests\Container\Helpers\Classes\AbstractClass;
+use OzeFramework\Tests\Container\Helpers\Classes\ClassThatHasCircularDependencyFirst;
+use OzeFramework\Tests\Container\Helpers\Classes\ClassThatHasCircularDependencySecond;
 use OzeFramework\Tests\Container\Helpers\Classes\ClassThatHasDependencies;
 use OzeFramework\Tests\Container\Helpers\Classes\RegularClass;
 use OzeFramework\Tests\Container\Helpers\Interfaces\RegularInterface;
@@ -151,5 +157,37 @@ final class ContainerTest extends TestCase
         $this->assertInstanceOf(RegularClass::class, $firstRegularClass);
         $this->assertInstanceOf(RegularClass::class, $secondRegularClass);
         $this->assertSame($firstRegularClass, $secondRegularClass);
+    }
+
+    public function testContainerCanThrowExceptionIfEntryIsNotFound(): void
+    {
+        $this->expectException(EntryNotFoundException::class);
+
+        $this->container->get('not-found');
+    }
+
+    public function testContainerCanThrowExceptionIfTargetClassDoesNotExist(): void
+    {
+        $this->expectException(BindingResolutionException::class);
+
+        $this->container->make('not-found');
+    }
+
+    public function testContainerCanThrowExceptionIfTargetClassIsNotInstantiable(): void
+    {
+        $this->expectException(BindingResolutionException::class);
+
+        $this->container->make(AbstractClass::class);
+    }
+
+    public function testContainerCanThrowExceptionIfThereIsCircularDependency(): void
+    {
+        $this->expectException(CircularDependencyException::class);
+
+        $this->container->bind(ClassThatHasCircularDependencyFirst::class, function (Container $container): ClassThatHasCircularDependencyFirst {
+            return new ClassThatHasCircularDependencyFirst($container->make(ClassThatHasCircularDependencySecond::class));
+        });
+
+        $this->container->make(ClassThatHasCircularDependencyFirst::class);
     }
 }

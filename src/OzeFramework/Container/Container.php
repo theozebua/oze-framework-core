@@ -7,6 +7,7 @@ namespace OzeFramework\Container;
 use Closure;
 use OzeFramework\Container\Contracts\Container as ContainerContract;
 use OzeFramework\Container\Exceptions\BindingResolutionException;
+use OzeFramework\Container\Exceptions\CircularDependencyException;
 use OzeFramework\Container\Exceptions\EntryNotFoundException;
 use ReflectionClass;
 use ReflectionException;
@@ -104,22 +105,34 @@ class Container implements ContainerContract
      */
     protected function resolve(string $abstract, array $parameters = []): mixed
     {
-        if (isset($this->instances[$abstract])) {
-            return $this->instances[$abstract];
+        static $resolving = [];
+
+        if (isset($resolving[$abstract])) {
+            throw new CircularDependencyException("Circular dependency detected for [{$abstract}]");
         }
 
-        if (!isset($this->bindings[$abstract])) {
-            $this->bind($abstract);
+        $resolving[$abstract] = true;
+
+        try {
+            if (isset($this->instances[$abstract])) {
+                return $this->instances[$abstract];
+            }
+
+            if (!isset($this->bindings[$abstract])) {
+                $this->bind($abstract);
+            }
+
+            $binding = $this->bindings[$abstract];
+            $object = $this->build($binding->concrete, $parameters);
+
+            if ($binding->singleton) {
+                $this->instances[$abstract] = $object;
+            }
+
+            return $object;
+        } finally {
+            unset($resolving[$abstract]);
         }
-
-        $binding = $this->bindings[$abstract];
-        $object = $this->build($binding->concrete, $parameters);
-
-        if ($binding->singleton) {
-            $this->instances[$abstract] = $object;
-        }
-
-        return $object;
     }
 
     /**
