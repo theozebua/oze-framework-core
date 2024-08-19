@@ -31,7 +31,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function registerRoutesFromControllerAttribute(array $controllers): void
     {
@@ -59,7 +59,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function registerRoute(HttpMethod $httpMethod, string $uri, Closure|Handler $handler): self
     {
@@ -69,7 +69,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
@@ -79,7 +79,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function head(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
@@ -89,7 +89,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function post(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
@@ -99,7 +99,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function put(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
@@ -109,7 +109,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function patch(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
@@ -119,7 +119,7 @@ class RouteRegistrar implements RouteRegistrarContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function delete(string $uri, Closure|Handler $handler): RouteRegistrarContract
     {
