@@ -18,7 +18,7 @@ return (new Config())
             ->in(__DIR__),
     )
     ->setRules([
-        '@PSR2' => true,
+        '@PSR12' => true,
         'declare_strict_types' => true,
         'global_namespace_import' => [
             'import_classes' => true,
