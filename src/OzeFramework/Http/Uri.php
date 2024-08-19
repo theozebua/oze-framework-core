@@ -408,7 +408,7 @@ class Uri implements UriInterface
 
         $path = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
-            fn(array $match): string => rawurlencode($match[0]),
+            fn (array $match): string => rawurlencode($match[0]),
             $path,
         );
 
@@ -434,7 +434,7 @@ class Uri implements UriInterface
 
         $query = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
-            fn(array $match): string => rawurlencode($match[0]),
+            fn (array $match): string => rawurlencode($match[0]),
             $query,
         );
 
@@ -453,7 +453,7 @@ class Uri implements UriInterface
 
         $fragment = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
-            fn(array $match): string => rawurlencode($match[0]),
+            fn (array $match): string => rawurlencode($match[0]),
             $fragment,
         );
 

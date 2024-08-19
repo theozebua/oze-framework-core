@@ -27,18 +27,17 @@ class Response extends Message implements ResponseInterface
     protected const MAX_STATUS_CODE = 599;
 
     /**
-     * Status code.
+     * Create a new response instance.
      *
-     * @var int
+     * @param int|StatusCode $statusCode
+     * @param string $reasonPhrase
      */
-    protected int $statusCode;
-
-    /**
-     * Reason phrase.
-     *
-     * @var string
-     */
-    protected string $reasonPhrase;
+    public function __construct(protected int|StatusCode $statusCode, protected string $reasonPhrase = '')
+    {
+        if ($reasonPhrase === '') {
+            $this->reasonPhrase = StatusCode::tryFrom($statusCode)?->getReasonPhrase() ?? '';
+        }
+    }
 
     /**
      * {@inheritdoc}
