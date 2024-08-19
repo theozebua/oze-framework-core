@@ -348,12 +348,21 @@ class Uri implements UriInterface
      */
     protected function validatePath(?string &$path): void
     {
-        // TODO: Add path validation
-        // $regex = '/^\/(?:[a-zA-Z0-9\-\._~!$&\'\(\)\*\+,;=:@]|%[0-9A-Fa-f]{2})*(?:\/(?:[a-zA-Z0-9\-\._~!$&\'\(\)\*\+,;=:@]|%[0-9A-Fa-f]{2})*)*$/';
+        if (preg_match('/[?#]/', $path)) {
+            throw new InvalidArgumentException('Path cannot contain query (?) or fragment (#) delimiters.');
+        }
 
-        // if (\preg_match($regex, $path) !== 1) {
-        //     throw new InvalidArgumentException("Invalid URI path: $path");
-        // }
+        if (preg_match('/%[^0-9A-Fa-f]{2}/', $path)) {
+            throw new InvalidArgumentException('Path contains an invalid percent-encoded sequence.');
+        }
+
+        $path = preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
+            fn (array $match) => rawurlencode($match[0]),
+            $path,
+        );
+
+        $path = is_string($path) ? $path : '';
     }
 
     /**
