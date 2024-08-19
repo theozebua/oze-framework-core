@@ -32,8 +32,10 @@ class Response extends Message implements ResponseInterface
      * @param int|StatusCode $statusCode
      * @param string $reasonPhrase
      */
-    public function __construct(protected int|StatusCode $statusCode, protected string $reasonPhrase = '')
+    public function __construct(protected int|StatusCode $statusCode = StatusCode::OK, protected string $reasonPhrase = '')
     {
+        $statusCode = $statusCode instanceof StatusCode ? $statusCode->value : $statusCode;
+
         if ($reasonPhrase === '') {
             $this->reasonPhrase = StatusCode::tryFrom($statusCode)?->getReasonPhrase() ?? '';
         }
@@ -44,7 +46,7 @@ class Response extends Message implements ResponseInterface
      */
     public function getStatusCode(): int
     {
-        return $this->statusCode;
+        return $this->statusCode instanceof StatusCode ? $this->statusCode->value : $this->statusCode;
     }
 
     /**
