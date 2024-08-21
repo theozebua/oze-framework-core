@@ -15,5 +15,7 @@ final class ResponseFactoryTest extends TestCase
         $response = Response::create();
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('Ok', $response->getReasonPhrase());
     }
 }
