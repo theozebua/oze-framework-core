@@ -152,6 +152,7 @@ class Headers implements HeadersContract
     /**
      * Wrap value into array if it's not already.
      *
+     * @param array|string $value
      * @return string[]
      */
     protected function wrap(array|string $value): array
