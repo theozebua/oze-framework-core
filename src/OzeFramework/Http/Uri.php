@@ -138,7 +138,7 @@ class Uri implements UriInterface
     {
         $userInfo = $this->user ?? '';
 
-        if (!is_null($this->password)) {
+        if (!is_null($this->password) && $this->password !== '') {
             $userInfo .= sprintf(':%s', $this->password);
         }
 
@@ -170,7 +170,7 @@ class Uri implements UriInterface
             return '/' . ltrim($this->path, '/');
         }
 
-        return $this->path;
+        return $this->path ?? '';
     }
 
     /**
@@ -178,7 +178,7 @@ class Uri implements UriInterface
      */
     public function getQuery(): string
     {
-        return $this->query;
+        return $this->query ?? '';
     }
 
     /**
@@ -186,7 +186,7 @@ class Uri implements UriInterface
      */
     public function getFragment(): string
     {
-        return $this->fragment;
+        return $this->fragment ?? '';
     }
 
     /**

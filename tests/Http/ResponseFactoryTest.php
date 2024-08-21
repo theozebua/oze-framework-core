@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace OzeFramework\Tests\Http;
 
 use OzeFramework\Http\Factory\Response;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
-final class ResponseFactoryTest extends AbstractUri
+final class ResponseFactoryTest extends TestCase
 {
-    public function testResponseFactoryReturnsUriObjectThatImplementsPsrHttpMessageResponseInterface(): void
+    public function testResponseFactoryReturnsResponseObjectThatImplementsPsrHttpMessageResponseInterface(): void
     {
         $response = Response::create();
 

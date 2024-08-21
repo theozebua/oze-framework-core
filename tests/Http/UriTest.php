@@ -55,7 +55,7 @@ final class UriTest extends AbstractUri
     {
         $query = Uri::create($this->url)->getQuery();
 
-        $this->assertSame('arg=value', $query);
+        $this->assertSame('key=value', $query);
     }
 
     public function testUriReturnsFragment(): void
