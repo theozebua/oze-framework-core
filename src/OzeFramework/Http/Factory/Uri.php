@@ -45,24 +45,12 @@ class Uri implements UriFactoryInterface
     }
 
     /**
-     * Create a new URI.
-     *
-     * @param string $uri
-     * @throws InvalidArgumentException If the given URI cannot be parsed.
-     * @return UriInterface
-     */
-    public static function create(string $uri = ''): UriInterface
-    {
-        return (new static())->createUri($uri);
-    }
-
-    /**
      * Create a new URI from global variables.
      *
      * @param array $globals
      * @return UriInterface
      */
-    public static function createFromGlobals(array $globals): UriInterface
+    public function createFromGlobals(array $globals): UriInterface
     {
         $https = $globals['HTTPS'] ?? false;
         $scheme = !$https || $https === 'off' ? 'http' : 'https';

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OzeFramework\Tests\Http;
 
 use InvalidArgumentException;
-use OzeFramework\Http\Factory\Uri;
 use Psr\Http\Message\UriInterface;
 
 final class UriFactoryTest extends AbstractUri
@@ -14,12 +13,12 @@ final class UriFactoryTest extends AbstractUri
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Uri::create('http:///invalid.com');
+        $this->factory->createUri('http:///invalid.com');
     }
 
     public function testUriFactoryReturnsUriObjectThatImplementsPsrHttpMessageUriInterface(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->factory->createUri($this->url);
 
         $this->assertInstanceOf(UriInterface::class, $uri);
         $this->assertSame($this->url, (string) $uri);
@@ -71,7 +70,7 @@ final class UriFactoryTest extends AbstractUri
             'REQUEST_TIME' => 1629804267,
         ];
 
-        $uri = Uri::createFromGlobals($server);
+        $uri = $this->factory->createFromGlobals($server);
 
         $this->assertInstanceOf(UriInterface::class, $uri);
         $this->assertSame('https://www.example.com/index.php?key=value', (string) $uri);
