@@ -5,33 +5,31 @@ declare(strict_types=1);
 namespace OzeFramework\Tests\Http;
 
 use OzeFramework\Http\Enums\StatusCode;
-use OzeFramework\Http\Factory\Response;
-use PHPUnit\Framework\TestCase;
 
-class ResponseTest extends TestCase
+class ResponseTest extends AbstractMessage
 {
     public function testResponseReturnsStatusCode(): void
     {
-        $response = Response::create();
+        $response = $this->responseFactory->createResponse();
 
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(StatusCode::OK->value, $response->getStatusCode());
     }
 
     public function testResponseReturnsReasonPhrase(): void
     {
-        $response = Response::create();
+        $response = $this->responseFactory->createResponse();
 
-        $this->assertSame('Ok', $response->getReasonPhrase());
+        $this->assertSame(StatusCode::OK->getReasonPhrase(), $response->getReasonPhrase());
     }
 
     public function testResponseReturnNewObjectWithModifiedStatus(): void
     {
-        $response = Response::create();
+        $response = $this->responseFactory->createResponse();
 
         $newResponse = $response->withStatus(StatusCode::CREATED->value, StatusCode::CREATED->getReasonPhrase());
 
-        $this->assertSame(201, $newResponse->getStatusCode());
-        $this->assertSame('Created', $newResponse->getReasonPhrase());
+        $this->assertSame(StatusCode::CREATED->value, $newResponse->getStatusCode());
+        $this->assertSame(StatusCode::CREATED->getReasonPhrase(), $newResponse->getReasonPhrase());
         $this->assertNotSame($response, $newResponse);
     }
 }

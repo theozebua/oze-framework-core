@@ -9,7 +9,15 @@ use OzeFramework\Http\Uri as HttpUri;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 
+use function count;
+use function explode;
 use function parse_url;
+use function preg_match;
+use function strpos;
+use function strstr;
+use function substr;
+
+use const PHP_URL_QUERY;
 
 class Uri implements UriFactoryInterface
 {
@@ -37,14 +45,55 @@ class Uri implements UriFactoryInterface
     }
 
     /**
-     * Create a new URI.
+     * Create a new URI from global variables.
      *
-     * @param string $uri
-     * @throws InvalidArgumentException If the given URI cannot be parsed.
+     * @param array $globals
      * @return UriInterface
      */
-    public static function create(string $uri = ''): UriInterface
+    public function createFromGlobals(array $globals): UriInterface
     {
-        return (new static())->createUri($uri);
+        $https = $globals['HTTPS'] ?? false;
+        $scheme = !$https || $https === 'off' ? 'http' : 'https';
+
+        $username = $globals['PHP_AUTH_USER'] ?? '';
+        $password = $globals['PHP_AUTH_PW'] ?? '';
+
+        $host = $globals['HTTP_HOST'] ?? ($globals['SERVER_NAME'] ?? '');
+
+        $port = !empty($globals['SERVER_PORT']) ? (int) $globals['SERVER_PORT'] : ($scheme === 'https' ? 443 : 80);
+
+        if (preg_match('/^(\[[a-fA-F0-9:.]+])(:\d+)?\z/', $host, $matches)) {
+            $host = $matches[1];
+
+            if (isset($matches[2])) {
+                $port = (int) substr($matches[2], 1);
+            }
+        } else {
+            $pos = strpos($host, ':');
+
+            if ($pos !== false) {
+                $port = (int) substr($host, $pos + 1);
+                $host = strstr($host, ':', true);
+            }
+        }
+
+        $requestUri = $globals['REQUEST_URI'] ?? '/';
+        $uriFragments = explode('?', $requestUri);
+        $path = $uriFragments[0];
+        $query = $globals['QUERY_STRING'] ?? '';
+
+        if ($query === '' && count($uriFragments) > 1) {
+            $query = parse_url('https://example.com' . $requestUri, PHP_URL_QUERY) ?? '';
+        }
+
+        return new HttpUri(
+            scheme: $scheme,
+            host: $host,
+            port: $port,
+            user: $username,
+            password: $password,
+            path: $path,
+            query: $query,
+        );
     }
 }

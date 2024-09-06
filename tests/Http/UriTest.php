@@ -5,69 +5,78 @@ declare(strict_types=1);
 namespace OzeFramework\Tests\Http;
 
 use InvalidArgumentException;
-use OzeFramework\Http\Factory\Uri;
+use OzeFramework\Http\Uri;
 
 final class UriTest extends AbstractUri
 {
+    protected Uri $uri;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->uri = $this->factory->createUri($this->url);
+    }
+
     public function testUriReturnsSchema(): void
     {
-        $scheme = Uri::create($this->url)->getScheme();
+        $scheme = $this->uri->getScheme();
 
         $this->assertSame('http', $scheme);
     }
 
     public function testUriReturnsAuthority(): void
     {
-        $authority = Uri::create($this->url)->getAuthority();
+        $authority = $this->uri->getAuthority();
 
         $this->assertSame('username:password@hostname:9090', $authority);
     }
 
     public function testUriReturnsUserInfo(): void
     {
-        $userInfo = Uri::create($this->url)->getUserInfo();
+        $userInfo = $this->uri->getUserInfo();
 
         $this->assertSame('username:password', $userInfo);
     }
 
     public function testUriReturnsHost(): void
     {
-        $host = Uri::create($this->url)->getHost();
+        $host = $this->uri->getHost();
 
         $this->assertSame('hostname', $host);
     }
 
     public function testUriReturnsPort(): void
     {
-        $port = Uri::create($this->url)->getPort();
+        $port = $this->uri->getPort();
 
         $this->assertSame(9090, $port);
     }
 
     public function testUriReturnsPath(): void
     {
-        $path = Uri::create($this->url)->getPath();
+        $path = $this->uri->getPath();
 
         $this->assertSame('/path', $path);
     }
 
     public function testUriReturnsQuery(): void
     {
-        $query = Uri::create($this->url)->getQuery();
+        $query = $this->uri->getQuery();
 
-        $this->assertSame('arg=value', $query);
+        $this->assertSame('key=value', $query);
     }
 
     public function testUriReturnsFragment(): void
     {
-        $fragment = Uri::create($this->url)->getFragment();
+        $fragment = $this->uri->getFragment();
 
         $this->assertSame('anchor', $fragment);
     }
 
     public function testUriReturnsNewObjectWithModifiedScheme(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -81,7 +90,7 @@ final class UriTest extends AbstractUri
 
     public function testUriReturnsNewObjectWithModifiedAuthorityAndUserInfo(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $newUri = $uri->withUserInfo('newusername', 'newpassword');
 
@@ -92,7 +101,7 @@ final class UriTest extends AbstractUri
 
     public function testUriReturnsNewObjectWithModifiedHost(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -106,7 +115,7 @@ final class UriTest extends AbstractUri
 
     public function testUriReturnsNewObjectWithModifiedPort(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -120,7 +129,7 @@ final class UriTest extends AbstractUri
 
     public function testUriReturnsNewObjectWithModifiedPath(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -134,7 +143,7 @@ final class UriTest extends AbstractUri
 
     public function testUriReturnsNewObjectWithModifiedQuery(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -148,7 +157,7 @@ final class UriTest extends AbstractUri
 
     public function testUriReturnsNewObjectWithModifiedFragment(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $newUri = $uri->withFragment('anchor');
 
@@ -158,7 +167,7 @@ final class UriTest extends AbstractUri
 
     public function testUriCanCastToString(): void
     {
-        $uri = Uri::create($this->url);
+        $uri = $this->uri;
 
         $this->assertSame($this->url, (string) $uri);
     }

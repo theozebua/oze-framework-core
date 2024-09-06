@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OzeFramework\Http\Enums;
 
+use function mb_convert_case;
+
 enum StatusCode: int
 {
     // Informational 1xx
