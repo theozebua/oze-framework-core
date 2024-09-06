@@ -7,7 +7,6 @@ namespace OzeFramework\Http;
 use OzeFramework\Http\Contracts\Headers as HeadersContract;
 
 use function array_filter;
-use function array_keys;
 use function array_map;
 use function function_exists;
 use function getallheaders;
@@ -52,7 +51,7 @@ class Headers implements HeadersContract
             $headers = array_filter($_SERVER, fn (string $key): bool => str_starts_with($key, 'HTTP_'), ARRAY_FILTER_USE_KEY);
         }
 
-        $headers = array_map(fn (string $key, array|string $values): Header => new Header($key, $this->wrap($values)), array_keys($headers), $headers);
+        $headers = array_map(fn (string $key, array|string $values): Header => new Header($key, $this->wrap($values)), $headers);
 
         return new static($headers);
     }
@@ -131,8 +130,12 @@ class Headers implements HeadersContract
         foreach ($this->headers as $index => $header) {
             if ($header->key === $key) {
                 $this->headers[$index] = new Header($key, $this->wrap($values));
+
+                return $this;
             }
         }
+
+        $this->addHeader($key, $values);
 
         return $this;
     }

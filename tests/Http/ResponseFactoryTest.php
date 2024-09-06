@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace OzeFramework\Tests\Http;
 
-use OzeFramework\Http\Factory\Response;
-use PHPUnit\Framework\TestCase;
+use OzeFramework\Http\Enums\StatusCode;
 use Psr\Http\Message\ResponseInterface;
 
-final class ResponseFactoryTest extends TestCase
+final class ResponseFactoryTest extends AbstractMessage
 {
     public function testResponseFactoryReturnsResponseObjectThatImplementsPsrHttpMessageResponseInterface(): void
     {
-        $response = Response::create();
+        $response = $this->responseFactory->createResponse();
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('Ok', $response->getReasonPhrase());
+        $this->assertSame(StatusCode::OK->value, $response->getStatusCode());
+        $this->assertSame(StatusCode::OK->getReasonPhrase(), $response->getReasonPhrase());
     }
 }

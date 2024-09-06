@@ -32,8 +32,12 @@ class Response extends Message implements ResponseInterface
      * @param int|StatusCode $statusCode
      * @param string $reasonPhrase
      */
-    public function __construct(protected int|StatusCode $statusCode = StatusCode::OK, protected string $reasonPhrase = '')
-    {
+    public function __construct(
+        protected int|StatusCode $statusCode = StatusCode::OK,
+        protected string $reasonPhrase = '',
+    ) {
+        parent::__construct();
+
         $statusCode = $statusCode instanceof StatusCode ? $statusCode->value : $statusCode;
 
         if ($reasonPhrase === '') {

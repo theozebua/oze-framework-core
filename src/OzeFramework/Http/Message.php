@@ -29,25 +29,19 @@ abstract class Message implements MessageInterface
     protected const array SUPPORTED_PROTOCOLS = ['1.1', '2.0'];
 
     /**
-     * HTTP protocol version.
+     * Construct a new http message.
      *
-     * @var string $protocolVersion
+     * @param string $protocolVersion
+     * @param Headers $headers
+     * @param StreamInterface $body
+     * @return void
      */
-    protected string $protocolVersion = '1.1';
-
-    /**
-     * HTTP headers.
-     *
-     * @var Headers $headers
-     */
-    protected Headers $headers;
-
-    /**
-     * HTTP body.
-     *
-     * @var StreamInterface $body
-     */
-    protected StreamInterface $body;
+    public function __construct(
+        protected string $protocolVersion = '1.1',
+        protected Headers $headers = new Headers(),
+        protected StreamInterface $body = new Stream(),
+    ) {
+    }
 
     /**
      * {@inheritdoc}
@@ -112,7 +106,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function withHeader(string $name, $value): MessageInterface
+    public function withHeader(string $name, mixed $value): MessageInterface
     {
         $this->validateHeaderValue($value);
 
@@ -128,7 +122,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function withAddedHeader(string $name, $value): MessageInterface
+    public function withAddedHeader(string $name, mixed $value): MessageInterface
     {
         $this->validateHeaderValue($value);
 
@@ -192,7 +186,7 @@ abstract class Message implements MessageInterface
      */
     protected function validateHeaderValue(mixed $value): void
     {
-        if (!is_string($value) || !is_array($value)) {
+        if (!is_string($value) && !is_array($value)) {
             throw new InvalidArgumentException('Header value must be a string or an array of strings; received ' . get_debug_type($value));
         }
     }
