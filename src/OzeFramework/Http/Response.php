@@ -7,6 +7,7 @@ namespace OzeFramework\Http;
 use InvalidArgumentException;
 use OzeFramework\Http\Enums\StatusCode;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 use function sprintf;
 
@@ -35,8 +36,11 @@ class Response extends Message implements ResponseInterface
     public function __construct(
         protected int|StatusCode $statusCode = StatusCode::OK,
         protected string $reasonPhrase = '',
+        string $protocolVersion = '1.1',
+        Headers $headers = new Headers(),
+        StreamInterface $body = new Stream(),
     ) {
-        parent::__construct();
+        parent::__construct($protocolVersion, $headers, $body);
 
         $statusCode = $statusCode instanceof StatusCode ? $statusCode->value : $statusCode;
 
